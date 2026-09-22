@@ -506,11 +506,119 @@ Describe an algorithm that $k$-group-sorts an array in (worst-case) time $O(n \l
 Algorithm:
 
 I assume $n$ and $k$ are powers of 2. 
-I will use a modified version of quicksort for this algorithm. I use the BFPRT algorithm described in class to find the most efficient pivot point, which takes $O(n)$ time. 
-From here, I will recursively perform partitions of the list so that the first recursion finds the median of the array and splits it into $2$ equally-sized groups, 
+I will use a modified version of quicksort for this algorithm. I use the BFPRT algorithm described in class to find the most median to use as a pivot point, which takes $O(n)$ time. 
+From here, I will recursively perform partitions of the list so that the first level finds the median of the array and splits it into $2$ equally-sized groups, 
 the second finds the median of each of the two groups and splits those in half, yielding $4$ groups, 
 the same pattern repeats to create $8$ groups, and the algorithm continues until the array is divided into $k$ groups. 
-Each recursive call doubles the number of groups, so it there would need to be $\log k$ calls. 
+Each \section{Group Sorting (50 points)}
+We say that an array $A$ of size $n$ is \emph{$k$-group sorted} if it can be divided into $k$ consecutive groups, each of size $n/k$, such that the elements in each group are larger than the elements in earlier groups, and smaller than elements in later groups. The elements within each group need not be sorted.   
+
+For example, the following array is $4$-group sorted:
+\[
+\begin{array}{|c|c|c|c||c|c|c|c||c|c|c|c||c|c|c|c|}
+\hline
+1 &2 &4 &3 &7 &6 &8 &5 &10 &11 &9 &12 &15 &13 &16 &14\\
+\hline
+\end{array}
+\]
+
+Note that every array is $1$-group-sorted, and only sorted arrays are $n$-group sorted.  You may assume that all elements are distinct, and if you want to you may assume that $n$ and $k$ are powers of $2$. 
+
+Describe an algorithm that $k$-group-sorts an array in (worst-case) time $O(n \log k)$.  In other words, in at most $O(n \log k)$ time it must turn an array which is not $k$-group sorted into one that is.  Prove correctness and running time.
+
+\bigbreak
+
+Algorithm:
+
+I assume $n$ and $k$ are powers of 2. 
+I will use a modified version of quicksort for this algorithm. I use the BFPRT algorithm described in class to find the most efficient pivot point, which takes $O(n)$ time. 
+From here, I will recursively perform partitions of the list so that the first level finds the median of the array and splits it into $2$ equally-sized groups, 
+the second finds the median of each of the two groups and splits those in half, yielding $4$ groups, 
+the same pattern repeats to create $8$ groups, and the algorithm continues until the array is divided into $k$ groups. 
+Each level of the algorithm doubles the number of groups, so it there would need to be $\log k$ calls. 
+For each call, the BFPRT algorithm would be performed, and then 
+each element of the list would be passed over once as the partition occurs, 
+meaning each call takes $O(n)$ time. 
+This leads to $O(n \log k)$ time, and creates a $k$-group sorted array.
+
+\bigbreak
+
+Correctness proof:
+
+We use proof by basic induction.
+
+Base case: array $A$ is $1$-group sorted. Since every group is $1$ group sorted, the base case holds.
+
+Inductive step: We seek to prove that if array $A$ is $k$-group sorted and we apply the algorithm, then it will be $2k$-group sorted.
+
+Assume $A$ is $k$-group sorted. We will prove that $A$ becomes $2k$-group sorted after applying this algorithm. 
+Let us focus on one group in $A$. We will call this group $G$. 
+Using the proof of the BFPRT algotihm, we know the pivot point of $G$ returned is the median of $G$. 
+BFPRT finds an element that allows $G$ to be partitioned into two equal-sized groups, with every element in the left group smaller than every element in the right group. 
+We swap the median pivot with the last element. From here, we create two pointers, a left pointer and a right pointer. 
+The left pointer is initially set to the first element in $G$, while the right is set to the second-to-last (since the last is the pivot).
+From here, the algorithm examines the left pointer, and determines if it is greater or less than the pivot. 
+If the element is less than the pivot point, it remains in place and the left pointer advances. 
+If the element is greater than the pivot point, the right pointer is checked, and it decreases by $1$ until the pointer points to an element smaller than the pivot.  
+This continues until the left pivot passes the right pivot. 
+Then, the pivot point swaps with the left pivot. 
+Since the element swapped has already been examined by the right pointer, we know that it does belong on the right side of the equation. 
+Now, we know that every element in the left half is smaller than the right half. 
+Therefore, when the partition occurs at the middle index of $G$, creating groups $G_{left}$ and $G_{right}$, 
+we know that for all elements $e$ in $G_{left}$, $e$ is less than the pivot point, 
+and for all elements $e$ in $G_{right}$, $e$ is greater than the pivot point. 
+This process is applied independently to each of the $k$ groups in $A$. 
+Each group is divided into $2$ groups such that every element in the left group is smaller than the right. 
+Furthermore, since $A$ is already $k$-group sorted, we know that every element in any group $G_i$ is smaller than the elements in the group to the right $G_{i+1}$. 
+Therefore, the resulting array after partitioning is $2k$-group sorted, and the inductive step holds.
+
+In proving that the base case and the inductive hypothesis both hold, I have proven the correctness of my algorithm.
+
+\bigbreak
+
+Runtime proof:
+
+I will first prove that each level of the call to the algorithm to double the number of groups in the list requires $O(n)$ time, 
+where $n$ is the number of elements in array $A$.
+
+The BFPRT algorithm has $O(n)$ time complexity, where $n$ is the number of elements in the group it is finding the median of, 
+as per the proof of the BFPRT algorithm time complexity in the class slides. 
+When the array is $k$-group sorted, the BFPRT algorithm repeats $k$ times, where each scan goes over the $\frac{n}{k}$ elements in each group, 
+as per the division of the groups. 
+Therefore, using a simple calculation, we can find that on each level of computation, BFPRT takes $O(n)$ times.
+
+Now, I will examine the partition algorithm. This algorithm examines each element of the array and performs swaps. 
+Each swap can be broken down to $O(1)$ time, since the swap is constant no matter the number of elements in the list. 
+The partition algorithm examines each element a constant number of times, and each swap takes $O(1)$ time. 
+As per the proof of algorithmic correctness, we can see that the partition algorithm keeps track of two pointers, 
+which advance through the list until the left pointer surpasses the right. 
+This means that each element of the group is examined once. 
+We know that each group of a $k$-group sorted array has $\frac{n}{k}$ elements, and there are $k$ groups. 
+Since the partition must run for each group, this means there are $k$ runs of an $O(\frac{n}{k})$ algorithm, meaning that for each round of partitions, 
+where the number of groups in the array doubles, $O(n)$ work is done.
+
+We can see that the BFPRT algorithm and the partition algorithm have an upper bound of $O(2n)$ together, 
+which simplifies to $O(n)$.
+
+Now, I will prove that the BFPRT + partition algorithm to double the number of groups by which an array is sorted by 
+must run $\log k$ times to fully split the array into $k$ groups.
+
+As established in the correctness proof, each call to the BFPRT + partition algorithm doubles the number of groups. 
+On the first iteration, the number of groups goes from $1$ to $2$. The next time, it goes from $2$ to $4$. 
+This creates the pattern that after $i$ iterations, there are $2^i$ groups. 
+Therefore, to reach $k$ groups, we can set up the simple equivalence:
+
+$k = 2^i$
+
+$i = \log_{2} k$
+
+Therefore, to create a $k$-group sorted array, the number of iterations required is $\log k$. 
+
+Therefore, since I have proven that there are $\log k$ calls to an algorithm that takes $O(n)$ time, 
+we can conclude that this $k$-group sorting algorithm has a worst-case time of $O(n \log k)$.
+
+\end{document}
+ call doubles the number of groups, so it there would need to be $\log k$ calls. 
 For each call, the BFPRT algorithm would be performed, and then 
 each element of the list would be passed over once as the partition occurs, 
 meaning each call takes $O(n)$ time. 
@@ -552,41 +660,42 @@ In proving that the base case and the inductive hypothesis both hold, I have pro
 
 Runtime proof:
 
-TODO
+I will first prove that each level of the call to double the number of groups in the list requires $O(n)$ time, 
+where $n$ is the number of elements in array $A$.
+
+The BFPRT algorithm has $O(n)$ time complexity, where $n$ is the number of elements in the group it is finding the median of, 
+as per the proof of the BFPRT algorithm time complexity in the class slides. 
+When the array is $k$-group sorted, the BFPRT algorithm repeats $k$ times, where each scan goes over the $\frac{n}{k}$ elements in each group, 
+as per the division of the groups. 
+Therefore, using a simple calculation, we can find that on each level of computation, BFPRT takes $O(n)$ times.
+
+Now, I will examine the partition algorithm. This algorithm examines each element of the array and performs swaps. 
+Each swap can be broken down to $O(1)$ time, since the swap is constant no matter the number of elements in the list. 
+As per the proof of algorithmic correctness, we can see that the partition algorithm keeps track of two pointers, 
+which advance through the list until the left pointer surpasses the right. 
+This means that each element of the group is examined once. 
+We know that each group of a $k$-group sorted array has $\frac{n}{k}$ elements, and there are $k$ groups. 
+Since the partition must run for each group, this means there are $k$ runs of an $O(\frac{n}{k})$ algorithm, meaning that for each round of partitions, 
+where the number of groups in the array doubles, $O(n)$ work is done.
+
+We can see that the BFPRT algorithm and the partition algorithm have an upper bound of $O(2n)$ together, 
+which simplifies to $O(n)$.
+
+Now, I will prove that the BFPRT + partition algorithm to double the number of groups by which an array is sorted by 
+must run $\log k$ times to fully split the array into $k$ groups.
+
+As established in the correctness proof, each call to the BFPRT + partition algorithm doubles the number of groups. 
+On the first iteration, the number of groups goes from $1$ to $2$. The next time, it goes from $2$ to $4$. 
+This creates the pattern that after $i$ iterations, there are $2^i$ groups. 
+Therefore, to reach $k$ groups, we can set up the simple equivalence:
+
+$k = 2^i$
+
+$i = \log_{2} k$
+
+Therefore, to create a $k$-group sorted array, the number of iterations required is $\log k$. 
+
+Therefore, since I have proven that there are $\log k$ calls to an algorithm that takes $O(n)$ time, 
+we can conclude that this $k$-group sorting algorithm has a worst-case time of $O(n \log k)$.
 
 \end{document}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
