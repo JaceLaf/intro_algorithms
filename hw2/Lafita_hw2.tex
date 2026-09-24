@@ -109,7 +109,9 @@
 {{\bf Homework \#2}} \hfill {{\bf Due:} September 24, 2026} \\
 \rule[0.1in]{\textwidth}{0.4pt}
 
-Remember: this is an oral presentation homework!  You are required to work in groups of three, and may collaborate only with other students in your group.  We encourage you to write up solutions, but your grade will be based entirely on your presentation.  At your presentation, the grader will randomly assign each student to present a problem. 
+Remember: this is an oral presentation homework!  You are required to work in groups of three, and may collaborate only with other students in your group. 
+We encourage you to write up solutions, but your grade will be based entirely on your presentation. 
+At your presentation, the grader will randomly assign each student to present a problem. 
 
 You may use the internet or LLMs to look up formulas, definitions, concepts, etc., but may not simply look up the answers online or ask an LLM.  
 
@@ -131,6 +133,8 @@ So you can compare a dumbbell from set $A$ to a dumbbell from set $B$, but canno
 
 Prove that any deterministic algorithm which solves the problem must make at least $\Omega(n \log n)$ comparisons.
 
+\bigbreak
+
 In this problem, we must compare $2$ sets of $n$ elements to find each dumbell's pair. 
 This is a comparison-based 
 
@@ -139,7 +143,17 @@ In the last homework you designed an algorithm for $k$-group-sorting in time $O(
 Prove a matching lower bound in the comparison model. 
 That is, prove that any algorithm for $k$-group-sorting in the comparison model must make at least $\Omega(n \log k)$ comparisons in the worst case.
 
-TODO
+\bigbreak
+
+Let us consider the number of permutations of array $A$ to determine the number of comparisons needed for $k$-group sorting. 
+We assume $A$ has $n$ elements, and we are trying to sort it into $k$ groups. 
+On the whole, since there are $n$ elements, there are $n!$ permutations of $A$. 
+Now, let us calculate the number of permutations of $A$ for which $n!$ is $k$-group sorted. 
+Since the array is broken up in $k$ groups, each group would have $\frac{n}{k}$ elements in it. 
+Therefore, within each group, there are $\frac{n}{k}!$ permutations. 
+There are $k$ groups, and we must assume they are in order, for $A$ to be $k$-group-sorted. 
+Therefore, the number of permutations of $A$ such that $A$ is $k$-group sorted would be $k * \frac{n}{k}!$.
+
 
 \section{Sorting Different-Length Items (34 points)}
 We saw in class some fast sorting algorithms where we assumed that the elements were integers with the same number of digits. 
@@ -200,13 +214,13 @@ Runtime Proof:
 Once again, I prove runtime in two parts. First, I prove that tree creation takes $O(n)$ time, and then that tree traversal for reconstruction 
 takes $O(n)$ time. Therefore, as these steps happen sequentially, the algorithm as a whole takes $O(n)$ time.
 
-The key observation here is that each node's addition takes at most $27$ comparisons, and therefore, a growth rate of $O(1)$. 
+The key observation here is that each node's addition takes at most $27$ comparisons, and therefore, has a growth rate of $O(1)$. 
 The correctness proof and algorithm description shows that no node's child can have a repeated character. 
 That is, if strings 'car' and 'cat' are in array $A$, the character 'a' would bot appear twice as a child of node 'c'. 
 As the characters are bounded within $a$-$z$, as well as a possible terminator digit, this leaves $27$ possibilities, and a maximum of $27$ children per node. 
 In any case, either when adding a node where the character is already a child in the tree or adding a new child, 
 the algorithm must iterate through the sorted set of children until it finds a position where the character is greater than those to the left 
-and less than those to the right (barring where the character is either the or the greatest sequentially). 
+and less than those to the right (barring where the character is either the least or the greatest sequentially). 
 Let us consider a worst case scenario to prove that this additive step takes at most $27$ steps, regardless of the value of $n$. 
 Consider Array $A$, which contains elements "c", "ca", "cb", "cc", ... "cz", as well as a second "cz". 
 As per the correctness proof, once the first $27$ elements have been added to the tree, the $c$ node has $26$ children. 
@@ -219,7 +233,12 @@ of the input $n$. This process of adding to the tree repeats for each character 
 Since there are a total of $n$ characters in the list, this $O(1)$ process repeats $n$ times. 
 Therefore, tree creation takes $O(n)$ time.
 
-Now, we will move on to array reconstruction.
+Now, I will move on to array reconstruction. Because this algorithm, in its worst case, visits every individual character in each element, 
+along with each elements's terminator, this section of the algorithm has a time complexity of $O(n)$. 
+Let us consider a worst case in which no two elements begin with the same set of letters, so each child of the root corresponds to at most one element. 
+This represents the worst case, since in cases where there is some overlap in the letters, 
+the iterative step would visit a total number of nodes less than $n$, whereas in this worst case, the iterative step visits $n$ nodes. 
+I will walk through the algorithm to prove an $O(n)$ worst-case complexity.
 
 \end{document}
 
