@@ -159,30 +159,67 @@ Since the total number of characters in all strings is $n$, we know that any arr
 (in which case every element has $1$ character). 
 For this, I consider a tree structure, wherein the $A$ is reconstructed in tree format, with a root node, 
 and each element is represented as characters cascading down a tree. 
-There is a $root$ node from which all elements originate, and each ends with a $null$ terminator. 
+There is a $root$ node from which all elements originate, and each ends with a terminator character. 
 For each string, I find its place in the tree by cascading down the tree. Each character is a node. 
 If the node exists in the tree, then there is no need to add it again, and the next character is added as a child of that node. 
 If the node does not exist, its place is found by iterating through the children to find at which point the character fits. 
-Since the alphabet has 26 letters, there would be at most 26 comparisons, so this sorting would take $O(26)$ comparisons, 
-or $O(1)$. At the end of the string, a null terminator character would be added to indicate the end of the string, 
-which would be sorted sequentially first. Since there is a constant number of letters in the alphabet, 
+Since the alphabet has $26$ letters and the algorith accounts for $1$ terminator, 
+there would be at most $27$ comparisons, so this sorting would take $O(27)$ comparisons, or $O(1)$. 
+At the end of the string, a terminator character would be added to indicate the end of the string, 
+which would be sorted sequentially first. Since there is nothing in the problem assuming that the set of strings is unique, 
+this null character can keep track of the number of instances of a given string. 
+For example, if 'cat' appears twice in $A$, the child of Node 't' would first be $1$ after the first instance is added to the tree, 
+and would increment to $2$ after the second. Since there is a constant number of letters in the alphabet, 
 each operation would takt $O(1)$ time. This constructs a tree by following this process for each character in each element in $A$. 
 Since there are $n$ characters spread throughout $A$, this would be an $O(1)$ process repeating $n$ times, 
 making the time to build the tree $O(n)$.
 
-From here, we must reconstruct the tree to create a sorted list of characters.
+From here, we must reconstruct the tree to create a sorted list of characters. We will use recursive backtracking to do so. 
+We traverse the tree in a DFS-type manner each time to construct each character, completing and adding the string to the sorted list. 
+From here, we would backtrack to find the next string in order. 
+Since this algorithm visits every node (that is, every unique character) once, it would visit at most $n$ nodes. 
+Since each node is examined once with a constant number of operations per node, this means that the list reconstruction would taker $O(n)$ time. 
+
+Therefore, since this algorithm uses two sequential $O(n)$ processes, it would take at most $O(2n)$ time, or, simplified, $O(n)$.
+
+I do want to address the main drawback to this algorithm, which is that each sequential placement of a character as a node could take up to 26 comparisons. 
+The tree creation algorithm does maintain a growth rate of $O(n)$, but it can be less efficient than just a classic $O(n^2)$ or even $O(n \log n)$ sorting algorithm, 
+if $n <= 27$. However, for very large $n$, this would be very efficient.
 
 \bigbreak
 
 Correctness Proof:
 
-TODO
+I will prove correctness in two parts. First, I prove that the tree creation does create a tree with each subsequent character in sorted order, 
+and then, I prove that the reconstruction of the list from the tree produces a sorted list of strings. 
 
 \bigbreak
 
 Runtime Proof:
 
-TODO
+Once again, I prove runtime in two parts. First, I prove that tree creation takes $O(n)$ time, and then that tree traversal for reconstruction 
+takes $O(n)$ time. Therefore, as these steps happen sequentially, the algorithm as a whole takes $O(n)$ time.
+
+The key observation here is that each node's addition takes at most $27$ comparisons, and therefore, a growth rate of $O(1)$. 
+The correctness proof and algorithm description shows that no node's child can have a repeated character. 
+That is, if strings 'car' and 'cat' are in array $A$, the character 'a' would bot appear twice as a child of node 'c'. 
+As the characters are bounded within $a$-$z$, as well as a possible terminator digit, this leaves $27$ possibilities, and a maximum of $27$ children per node. 
+In any case, either when adding a node where the character is already a child in the tree or adding a new child, 
+the algorithm must iterate through the sorted set of children until it finds a position where the character is greater than those to the left 
+and less than those to the right (barring where the character is either the or the greatest sequentially). 
+Let us consider a worst case scenario to prove that this additive step takes at most $27$ steps, regardless of the value of $n$. 
+Consider Array $A$, which contains elements "c", "ca", "cb", "cc", ... "cz", as well as a second "cz". 
+As per the correctness proof, once the first $27$ elements have been added to the tree, the $c$ node has $26$ children. 
+To add the $27$th, the second 'z', the algorithm must iterate through each child, checking if 'z' is less than each subsequent character. 
+Since 'z' has the greatest possible value, it would need to iterate through $26$ elements, before finding its equal at the $27$th, 
+which means there would be $27$ total operations in the worst case. If we imagine a version of $A$ with $5$ "cz" strings, each subsequent addition of 
+'z' as a child of 'c' would take $27$ comparisons. As this is a constant, bounded value for the worst case, 
+the node placement algorithm can be expressed as $O(1)$ to represent the constant number of operations that do not depend on the size 
+of the input $n$. This process of adding to the tree repeats for each character in each element of the list. 
+Since there are a total of $n$ characters in the list, this $O(1)$ process repeats $n$ times. 
+Therefore, tree creation takes $O(n)$ time.
+
+Now, we will move on to array reconstruction.
 
 \end{document}
 
