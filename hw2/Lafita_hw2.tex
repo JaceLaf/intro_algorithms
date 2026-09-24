@@ -131,7 +131,8 @@ So you can compare a dumbbell from set $A$ to a dumbbell from set $B$, but canno
 
 Prove that any deterministic algorithm which solves the problem must make at least $\Omega(n \log n)$ comparisons.
 
-TODO
+In this problem, we must compare $2$ sets of $n$ elements to find each dumbell's pair. 
+This is a comparison-based 
 
 \section{Group Sorting (33 points)}
 In the last homework you designed an algorithm for $k$-group-sorting in time $O(n \log k)$. 
@@ -156,7 +157,20 @@ Algorithm Description:
 
 Since the total number of characters in all strings is $n$, we know that any array $A$ must have at most $n$ elements 
 (in which case every element has $1$ character). 
+For this, I consider a tree structure, wherein the $A$ is reconstructed in tree format, with a root node, 
+and each element is represented as characters cascading down a tree. 
+There is a $root$ node from which all elements originate, and each ends with a $null$ terminator. 
+For each string, I find its place in the tree by cascading down the tree. Each character is a node. 
+If the node exists in the tree, then there is no need to add it again, and the next character is added as a child of that node. 
+If the node does not exist, its place is found by iterating through the children to find at which point the character fits. 
+Since the alphabet has 26 letters, there would be at most 26 comparisons, so this sorting would take $O(26)$ comparisons, 
+or $O(1)$. At the end of the string, a null terminator character would be added to indicate the end of the string, 
+which would be sorted sequentially first. Since there is a constant number of letters in the alphabet, 
+each operation would takt $O(1)$ time. This constructs a tree by following this process for each character in each element in $A$. 
+Since there are $n$ characters spread throughout $A$, this would be an $O(1)$ process repeating $n$ times, 
+making the time to build the tree $O(n)$.
 
+From here, we must reconstruct the tree to create a sorted list of characters.
 
 \bigbreak
 
