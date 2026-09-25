@@ -148,9 +148,14 @@ In this case, there are three children for each node. Suppose you start with the
 which contains the possible relationships between $a_1$ and $b_1$. Since $|A|=|B|=n$, then this means there are $n!$ distinct orderings/permutations for set $B$. 
 Hence, our decision tree would have at least $n!$ leaves. The maximum number of comparisons you would need to sort set $B$ is actually the depth of 
 this decision tree. Thus, the following describes the number of decisions ($d$) that must be made by any algorithm to produce ordering $\pi$ for set $B$.
+Therefore, we can build the following inequality:
 
-Since $n! \leq \#\text{leaves}\leq 3^d$, 
-then $\log_{3}(n!)\leq d$. 
+$$n! \leq \#\text{leaves}\leq 3^d$$
+
+This is equivalent to:
+
+$$\log_{3}(n!)\leq d$$
+
 Since the number of decisions that must be made is greater than or equal to $\log_3 (n!)$, this must be the lower bound for the number of comparisons. 
 Using the same logic as in class to prove a minimum $\log(n!)$ comparisons means that any sorting algorithm has lower bound $\Omega(n \log n)$, 
 taken in account with the fact that changing the base of a log changes it to a constant value, we can represent $\log_3 (n!)$ as $\Omega(n \log n)$. 
@@ -187,15 +192,16 @@ Each comparison of any two values $x$ and $y$ in $A$ has $3$ possible outcomes.
 
 Therefore, an algorithm that makes $d$ comparisons would have at most $2^d$ leaves, so 
 
-$\frac{n!}{((n/k)!)^k} \leq \#\text{leaves} \leq 2^d$
+$$\frac{n!}{((n/k)!)^k} \leq \#\text{leaves} \leq 2^d$$
 
 This can be written as:
 
-$d \leq \log (\frac{n!}{((n/k)!)^k})$
+$$d \leq \log (\frac{n!}{((n/k)!)^k})$$
 
-We can simplify this further to prove a lower bound: 
+We can simplify this further by finding a lower bound for the numerator and an upper bound for the demonenator to prove a lower bound 
+for the algorithm as a whole: 
 
-$(\frac{n!}{((n/k)!)^k}) \geq \frac{(n/e)^n}{(n/k)^{(n/k)k}}=(\frac{n}{e(n/k)})^n=(k/e)^n$
+$$(\frac{n!}{((n/k)!)^k}) \geq \frac{(n/e)^n}{(n/k)^{(n/k)k}}=(\frac{n}{e(n/k)})^n=(k/e)^n$$
 
 This means that $d \geq n \log(k/e)$, so $d = \Omega(n \log k)$. 
 Thus, we have proven a minimum of $\Omega(n \log k)$ comparisons for any algorithm that completes the $k$-group sorting task. 
