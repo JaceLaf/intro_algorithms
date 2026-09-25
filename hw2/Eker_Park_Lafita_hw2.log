@@ -1,10 +1,10 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.9.15)  24 SEP 2026 14:26
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.9.15)  25 SEP 2026 01:22
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**/home/jason-lafita/intro_algorithms/hw2/Lafita_hw2.tex
-(/home/jason-lafita/intro_algorithms/hw2/Lafita_hw2.tex
+**/home/jason-lafita/intro_algorithms/hw2/Eker_Park_Lafita_hw2.tex
+(/home/jason-lafita/intro_algorithms/hw2/Eker_Park_Lafita_hw2.tex
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
 (/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
@@ -632,8 +632,8 @@ Package: titlesec 2023/10/27 v2.16 Sectioning titles
 \titlewidthfirst=\dimen308
 )
 \c@fact=\count326
- (./Lafita_hw2.aux)
-\openout1 = `Lafita_hw2.aux'.
+ (./Eker_Park_Lafita_hw2.aux)
+\openout1 = `Eker_Park_Lafita_hw2.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 106.
 LaTeX Font Info:    ... okay on input line 106.
@@ -673,9 +673,9 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 48
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 ))
 Package hyperref Info: Link coloring OFF on input line 106.
- (./Lafita_hw2.out) (./Lafita_hw2.out)
+ (./Eker_Park_Lafita_hw2.out) (./Eker_Park_Lafita_hw2.out)
 \@outlinefile=\write4
-\openout4 = `Lafita_hw2.out'.
+\openout4 = `Eker_Park_Lafita_hw2.out'.
 
 LaTeX Font Info:    Trying to load font information for U+msa on input line 122.
  (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
@@ -686,27 +686,27 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 122.
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) [1
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2] [3] (./Lafita_hw2.aux)
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2] [3] [4] (./Eker_Park_Lafita_hw2.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
-Package rerunfilecheck Info: File `Lafita_hw2.out' has not changed.
+Package rerunfilecheck Info: File `Eker_Park_Lafita_hw2.out' has not changed.
 (rerunfilecheck)             Checksum: 7F7EC0A159AC6A8626182A7C40AD43C6;657.
  ) 
 Here is how much of TeX's memory you used:
- 24798 strings out of 476106
- 481504 string characters out of 5793933
- 1938975 words of memory out of 5000000
- 46353 multiletter control sequences out of 15000+600000
+ 24810 strings out of 476106
+ 481898 string characters out of 5793933
+ 1939975 words of memory out of 5000000
+ 46359 multiletter control sequences out of 15000+600000
  563798 words of font info for 58 fonts, out of 8000000 for 9000
  59 hyphenation exceptions out of 8191
- 84i,5n,93p,454b,581s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on Lafita_hw2.pdf (3 pages, 108741 bytes).
+ 84i,5n,93p,464b,581s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
+Output written on Eker_Park_Lafita_hw2.pdf (4 pages, 143973 bytes).
 PDF statistics:
- 79 PDF objects out of 1000 (max. 8388607)
- 57 compressed objects within 1 object stream
- 7 named destinations out of 1000 (max. 500000)
+ 104 PDF objects out of 1000 (max. 8388607)
+ 75 compressed objects within 1 object stream
+ 13 named destinations out of 1000 (max. 500000)
  37 words of extra memory for PDF output out of 10000 (max. 10000000)
 
