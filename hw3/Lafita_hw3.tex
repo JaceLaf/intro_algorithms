@@ -359,16 +359,15 @@ let $b_i$ be the $k$-th smallest element in $a_1,\mathellipsis,a_{k+i-1}$.
 I use a binary heap structure, with a maximum size of $k$ to organize array $A$. We define this heap as $H$ The key of $H$ is the value of each integer in $A$. 
 $H$ reverses the typical structure of the binary heap, where instead of organizing in ascending order of the key, it would organize in descending order; 
 that is, the root of $H$ would be the largest element, making it a max heap. From here, the first $k$ elements would be inserted into $H$. 
-Each insertion would occur at the next open leaf, and then bubble up until the correct point in the tree, 
-wherein the element is larger than its children and less than or equal to its parents. 
+Each insertion would occur at the next open leaf, and then continually swap with its parent while the node is greater than its parents. 
 Because during the insertions, each of the new nodes moves into the next open leaf node, where each level of the tree is filled out before adding another, 
 the depth of the tree must be less than $(\log x) + 1$ where $x$ is the number of nodes in the tree. Since there are $k$ nodes in the heap, 
 the depth of the tree would be $\log k$, meaning each insertion takes at most $O(\log k)$ time. 
-This way, after $k$ insertions, the $k$th smallest element would be the root of the heap. 
-Thus, a function \verb|find_max()| would be needed to return the $k$th smallest element without extracting it, 
+This way, after $k$ insertions, the heap contains exactly $k$ elements. Since the root of a max heap is the largest of these $k$ elements, 
+it is the $h$th smallest element of the prefix. Thus, a function \verb|find_max()| would be needed to return the $k$th smallest element without extracting it, 
 which is simply returning the value of the root, therefore taking $O(1)$ time.
 
-From here, the size of $H$ would remain constant. The algorithm would iterate through each element $i$ of $H$, and check whether $i \geq$ \verb|find_max(H)|. 
+From here, the size of $H$ would remain constant. The algorithm would iterate through each element $i$ of $A$, and check whether $i \geq$ \verb|find_max(H)|. 
 If so, the $k$th smallest element remains the same, so no further insertions into the heap must occur. If $i <$ \verb|find_max(H)|, 
 then the current maximum must be extracted, and the new element $i$ must be inserted into $H$, to find the new $k$th smallest element. 
 The extraction process first involves swapping the rightmost leaf of $H$ with the maximum, removing the maximum, 
@@ -377,9 +376,12 @@ meaning the extraction process takes at most $O(\log k)$ time. Then, $i$ must be
 as is proven above. Then, the new root of the tree is the new $k$th smallest element, so \verb|find_max(H)| returns the next $k$th smallest element. 
 Therefore, the combination of $2$ $O(\log k)$ and $1$ $O(1)$ operations means each insertion has an upper bound of $O(\log k)$
 
-For each subsequent element of $A$, this process repeats. Thus, for each of the $n$ elements of $A$, an $O(\log k)$ operation occurs. 
-Therefore, the overall time complexity needed to form an array of the $k$th smallest element of $A$ for every subarray of $A$ which is at least length $k$ 
-is $O(n \log k)$.
+Generalizing this process, at every point after processing a prefix within $A$ of length at least $k$, 
+$H$ contains exactly the $k$ smallest elements of the prefix. Since $H$ is a max heap, its root is the $k$th smallest element of the prefix, 
+so it can be extracted to find the $k$th smallest element of any prefix. This repeats for each element of $A$ with a position greater than $k$. 
+Thus, for each of the $n$ elements of $A$, an $O(\log k)$ operation (either insertion for the first $k$ elements or 
+extraction and insertion for subsequent elements) could occur. Therefore, the overall time complexity needed to form 
+an array of the $k$th smallest element of $A$ for every subarray of $A$ which is at least length $k$ is $O(n \log k)$.
 
 \item (16 points) Prove the correctness and the running time for your algorithm.
 
@@ -391,14 +393,14 @@ and they each perform their respective function described correctly.
 Thus, this proof will center on proving that this binary heap structure is utilized correctly in the algorithm described to solve the listed problem.
 
 I will prove this by induction. I will first define some terms. $A$ is the array we consider. $A$ has $n$ elements, and $A_i$ is the $i$th element of $A$. 
-Finally, I define $K(i)$ to be the condition that the $k$th smallest element of $A[0:i]$ was returned by that iteration of the algorithm.
+Finally, I define $K(i)$ to be the condition that after processing elements $A[0:i]$, $H$ contains exactly the $k$ smallest elements of $A[0:i]$, 
+and \verb|find_max(H)| returns the $k$th smallest element of $A[0:i]$.
 
-Our base case is when $A_i = A_{k-1}$. Therefore, the first $k$ elements have been inserted into $H$ correctly, 
-and \verb|find_max()| correctly returns the largest element of $A[0:(k-1)]$, which is by definition, the $k$th smallest element. 
-Therefore, $K(k-1)$ returns the $k$th smallest element of $A[0:(k-1)]$, so the base case holds.
+Our base case is $i = k-1$. Therefore, the first $k$ elements have been processed and inserted into $H$ correctly, 
+so $H$ contains $A[0:(k-1)]$. Since $H$ is a max-heap, then \verb|find_max(H)| correctly returns the root of $H$,, which is by definition, 
+the $k$th smallest element of $A[0:(k-1)]$. Therefore, $K(k-1)$ holds.
 
-For our inductive hypothesis, we assume $K(i)$ correctly finds the $k$th smallest element of $A[0:i]$. We then apply algorithm $K$ again. 
-We will prove that this means that $K(i+1)$ also correctly finds the $k$th smallest element of $A[0:(i+1)]$. 
+For our inductive hypothesis, we assume $K(i)$ holds. We then apply the algorithm again. We will prove that this means that $K(i+1)$ will hold true. 
 This means that to start, we have max heap $H$ containing the $k$ smallest elements in $A[0:i]$. Now, we examine element $A_{i+1}$. 
 
 This creates two cases:
@@ -408,14 +410,16 @@ This creates two cases:
 \end{enumerate}
 
 The first case is the simplest. If $A_{i+1} \geq$ \verb|find_max(H)|, then the current \verb|find_max(H)| remains the $k$th smallest element of $A[0:(i+1)]$. 
-This is because a larger value would in no way shift which element is smaller within the relative $k$th smallest elements. 
-Therefore, in this case, $K(i+1)$ would return the same value as $K(i)$, which would remain correct, and the inductive step would hold.
+Therefore, the new element is at least as large as the $k$th smallest element. Therefore, the $k$ elements already in $H$ remain the $k$ smallest elements 
+in the new prefix $A[0:(i+1)]$, so the $k$th smallest element remains the $k$th smallest element of $A[0:i]$. 
+Therefore, in this case, the condition $K(i+1)$ holds. 
 
-We now consider the second case. In this case, there is a new smaller element than what was just the $k$th smallest element, 
-so this element is now the $(k+1)$th smallest element. Therefore, we use \verb|extract_max(H)| to pull what was just the $k$th smallest element. 
+We now consider the second case. In this case, $A_{i+1}$ is smaller than the current $k$th smallest element. 
+Therefore, $A_{i+1}$ belongs among the $k$ smallest elements of the new prefix, while the previous $k$th smallest element is no longer among those $k$ elements, 
+so we must find a new $k$th smallest element. Therefore, we use \verb|extract_max(H)| to pull what was just the $k$th smallest element. 
 This creates a tree with $k-1$ nodes. Thus, to find the $k$th smallest element, we must insert $A_{i+1}$ into $H$. Since we know \verb|insert()| works, 
-we can assume that after $A_{i+1}$ is inserted into $H$, the root of $H$ is now the biggest element in the heap. 
-Because the heap now contains the $k$ smallest elements of $A$, the largest of those must be the $k$th smallest. 
+we can assume that after $A_{i+1}$ is inserted into $H$, the root of $H$ is now the biggest element in $H$. 
+Because the heap now contains exactly the $k$ smallest elements of $A[0:(i+1)]$, the largest element in the heap is the $k$th smallest element of $A[0:(i+1)]$. 
 Thus, performing \verb|find_max(H)| returns what is now the $k$th smallest element. 
 
 Therefore, we have shown that if $K(i)$ is true and the algorithm is applied again, then $K(i+1)$ is true. 
@@ -427,7 +431,7 @@ Runtime Proof:
 
 We will first prove that if binary heap $H$ has $k$ elements, it has a depth of at most $(\log k) + 1$. 
 In my algorithm, heap $H$ is structured so that each level of the tree must be complete before adding a node on the next level. 
-Since each node has two children, this means that number of levels of $H$ is strictly less than $(\log_2 k) + 1$.
+A complete binary tree with $k$ nodes has height $\floor{(\log_2 k)} + 1$, and therefore at most $\floor{(\log_2 k)} + 1$ levels.
 
 We will now prove that \verb|insert()| and \verb|extract_max()| run in $O(\log k)$ time, and \verb|find_max()| runs in $O(1)$ time. 
 
@@ -440,21 +444,30 @@ so this operation is $O(1)$. However, from here, the new element must find the c
 where it is smaller than either of its children and greater than or equal to its parents. This is performed using the "swimming up" idea, 
 where the element is swapped with its parent until the above conditions are met. 
 Let us consider a case where the element inserted is the new maximum. This element must traverse through every level of the tree. 
-Therefore, this process has a time complexity of $O((\log k) + 1)$, which simplifies to $O(\log k)$.
+Therefore, this process has a time complexity of $O((\log k) + 1)$, which simplifies to $O(\log k)$. 
+Generalizing this, we conclude that when inserting into a heap containing at most $k-1$ elements, the new element is placed at the next open position, 
+after which it may move upward through at most $O(\log k)$ levels.
 
 Now, we will move on to proving that removing the maximum element of heap $H$, with $k$ elements, has a time complexity of $O(\log k)$. 
-First, we must swap the root of $H$ with the last element for simple removal. This takes constant time because TODO. 
+First, we must swap the root of $H$ with the last element for simple removal. This takes constant time because 
+the root and the last element of the heap are both directly accessible, so they can be swapped in $O(1)$ time. 
 Then, the last element is easily deleted, and the tree maintains its complete structure. 
 From here, what was previously the last element must "sink down". First, the algorithm checks if it is smaller than either of its children. 
-If so, it is swapped with the smaller of its children until it either has no children or it is greater than or equal to both its children. 
-Let us consider a case where the last element of $H$ is the smallest. Therefore, in the sinking down process, 
-it traverses each of the $(\log k) + 1$ levels of the tree, meaning that it has a time complexity of $O((\log k) + 1)$, or $O(\log k)$.
+If so, it is swapped with the larger of its children until it either has no children or it is greater than or equal to both its children. 
+In the worst case, the element moved to the root is the smallest element in $H$, so it has to move down through every level of the tree.
+Therefore, in the sinking down process, it traverses each of the $(\log k) + 1$ levels of the tree, 
+meaning that this algorithm has a time complexity of $O((\log k) + 1)$, or $O(\log k)$. 
+Finally, the algorithm also spends $O(1)$ time recording each output as the final process. 
 
 Therefore, taken together, the process of extracting the maximum of $H$ with $k$ elements, inserting a new element, and finding the new maximum 
-has $2$ $O(\log k)$ and $1$ $O(1)$ processes performed sequentially, meaning the time is $ 2 \cdot O(\log k) + O(1)$, which simplifies to $O(\log k)$. 
-For each of the $n$ elements of $A$, some combination of these processes occur -- either an \verb|insert()| for the first $k$ elements, 
-a \verb|find_max(H)| when the $k$ smallest elements remain the same, or all $3$. Thus, since this $O(\log k)$ process occurs $n$ times, 
-the algorithm has an overall time complexity of $O(n \log k)$.
+has $2$ $O(\log k)$ and $2$ $O(1)$ processes performed sequentially, meaning the time is $2 \cdot O(\log k) + 2 \cdot O(1)$, 
+which simplifies to $O(\log k)$. For each of the $n$ elements of $A$, some combination of these processes occur -- 
+either an \verb|insert()| for the first $k$ elements, a \verb|find_max(H)| when the $k$ smallest elements remain the same, or all $3$. 
+Thus, since this $O(\log k)$ process occurs $n$ times, the algorithm has an overall time complexity of $O(n \log k)$.
+
+Finallyk, we must consider the case where $k = 1$, since $\log 1 = 0$. When $k = 1$, the heap is of size 1 and keeps track of the $1$st smallest, 
+or smallest element of the array so far, and therefore runs in $O(n)$ time. This still maintains an upper bound of $O(n \log k)$, 
+so we can conclude that the time complexity of this algorithm for any postive integer $k$ is $O(n \log k)$
 
 \end{enumerate}
 
