@@ -178,7 +178,12 @@ Recall that in a 2-3-4 tree, whenever we insert a new key we immediately split (
 In other words, show that there is a series of $n$ inserts so that the next insert causes $\Omega(\log n)$ splits. 
 You can be informal here --- just explain at a high level what such a sequence would look like and why it would result in $\Omega(\log n)$ splits.
 
-TODO
+The key observation in 2-3-4 trees is that every leaf must have the same depth. 
+Our worst case scenario is that every node along the insertion path is full (a 4-node), which means that on the way down, every node must be split. 
+Therefore, $1$ split occurs for every level of the tree. To find the lower bound for the number of splits, we must find the depth of the tree. 
+Because each level increases the number of nodes by a constant level (between 2-4, since the number of children of any internal node is between 2 and 4), 
+we can represent the number of levels in the tree as $\Theta(\log n)$ (as there are currently $n$ nodes in the tree). 
+To insert a new element, we perform $1$ split at each of the $\Theta(\log n)$ levels, yielding $\Omega(\log n)$ splits.
 
 \end{enumerate}
 
@@ -233,7 +238,61 @@ Let $C_{MTF}$ be the total cost if we use MTF on the same operations starting fr
 Hint: Think of each item $x_i$ as having a ``piggy bank'' in which the number of tokens is the number of elements before it in the current list 
 that come after it in the initial list, or a potential function equal to the number of reversals.  
 
-TODO
+Let us assume that for each element $x_i$, where $i$ is the index of the element in the list. 
+This means that the cost $C_i$ of accessing that element is $i$. 
+We will consider a sequence of $m$ lookup operations, and consider the cost $C$ of this series of operations. 
+
+Let us consider the cost of looking up some element $x_i$. 
+In the initial lookup implementation, the cost would be: $C_i = i$
+
+However, let us consider this cost of access for element $x_i$ with the MTF lookup operation. 
+In this, we must not only consider the initial cost but also the amount accumulated from previous swaps. 
+For any the access of element $x_i$, we can consider $1$ token "saved" for each element that is currently before $x_i$ which was initially after $x_i$, 
+since the process of moving $x_i$ to the front reverses back what was already reversed. 
+
+Similar to the naive implementation, the initial lookup cost is: $C_i = i$. 
+Since this applies to any element, we can generalize this to any lookup with the initial algorithm: $C_{init} = i$.
+
+After a series of some operations, $x_i$ will have changed location. We set this location to $j$. 
+We can divide the set of elements before $x_i$ after $m$ operations into two categories: 
+elements that were before $x_i$ in the initial list, which we term $B$ and elements that were originally after $x_i$, which we term $D$. 
+Therefore, we can represent the current position $j$ as: $j = |B| + |D| + 1$
+
+We can represent the new cost of access of $x_i$ as: $C_i = |B| + |D| + 1$. 
+We know that every element $D$ which is now before $x_i$ started out after $x_i$, so there are $|D|$ tokens in the $x_i$'s piggy bank. 
+We can spend these tokens to cover the cost of passing over those $|D|$ elements, but we must still pay the cost: $C_i = |B| + 1$
+
+As we move $x_i$ to the front, $|B|$ tokens enter $x_i$'s piggy bank, since they represent elements that were before and are now after $x_i$. 
+However, we must still cover the cost $|B| + 1$. Because $x_i$ was initially at position $i$, we know that $|B| \leq (i-1)$. 
+Therefore, the maximum cost of any access of $x_i$ that is left to be paid after paying the accumulated $|D|$ tokens is: $C_i \leq i$.
+
+In the process of accessing $x_i$, we must create the $|B|$ tokens, while also actually accessing the element. 
+Thus, the operation must access the element, spend the $|D|$ tokens, and accumulate the $|B|$ tokens. 
+We can express this as: 
+$C_i = |B| + |D| + 1 - |D| + |B|$. 
+This simplifies to: $C_i = 2|B| + 1$. 
+
+Inserting the equation we found for be, we get: 
+$C_i \leq 2(i - 1) + 1 = 2i - 1 < 2i$
+
+Therefore, this operation costs at most $2i$. This piggy bank argument establishes that the accounting cost of any MTF operation $o$ 
+is less than twice the cost of the comparable naive algorithm. 
+
+We can expand this over the whole sequence of $m$ elements: 
+
+$C_{MTF} \leq (2i_1 + 2i_2 + 2i_3 + ... + 2i_m)$
+
+Now summing the initial algorithm, since the list nevver changes:
+
+$C_{init} = i_1 + i_2 + i_3 + ... + i_m$
+
+Putting this together:
+
+$C_{MTF} \leq (2i_1 + 2i_2 + 2i_3 + ... + 2i_m) = 2 * C_{init}$
+
+Therefore:
+
+$C_{MTF} \leq 2 * C_{init}$
 
 \item (17 points) Now let $C_{static}$ be the smallest possible cost among all fixed lists.  In other words, given the same sequence of lookups, 
 each fixed list (without MTF) has some cost, and let $C_{static}$ be the minimum of those costs. 
@@ -243,10 +302,10 @@ Hint: Think about your bank or potential function argument from the previous par
 What if you redefine it to be relative to the optimal list, rather than the initial list?  Then what is the initial bank/potential value? 
 How does this affect the amortized analysis?
 
-TODO
+In the last problem, we compared the MTF list to the original list. In this list, we define it relative to the optimal list, 
+which is organized by number of accesses. 
 
 \end{enumerate}
-
 
 
 \section{\texorpdfstring{$k$-th smallest elements (33 points)}{k-th smallest elements (33 points)}}
