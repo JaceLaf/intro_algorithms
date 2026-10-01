@@ -246,39 +246,46 @@ Let us consider the cost of looking up some element $x_i$.
 In the initial lookup implementation, the cost would be: $C_i = i$
 
 However, let us consider this cost of access for element $x_i$ with the MTF lookup operation. 
-In this, we must not only consider the initial cost but also the amount accumulated from previous swaps. 
-For any the access of element $x_i$, we can consider $1$ token "saved" for each element that is currently before $x_i$ which was initially after $x_i$, 
+In this, we must consider both the actual access cost and the tokens accumulated from previous reversals. 
+For any the access of element $x_i$, we can consider $1$ token stored for each element that is currently before $x_i$ which was initially after $x_i$, 
 since the process of moving $x_i$ to the front reverses back what was already reversed. 
 
 Similar to the naive implementation, the initial lookup cost is: $C_i = i$. 
 Since this applies to any element, we can generalize this to any lookup with the initial algorithm: $C_{init} = i$.
 
 After a series of some operations, $x_i$ will have changed location. We set this location to $j$. 
-We can divide the set of elements before $x_i$ after $m$ operations into two categories: 
+We can divide the set of elements before $x_i$ after some operations into two categories: 
 elements that were before $x_i$ in the initial list, which we term $B$ and elements that were originally after $x_i$, which we term $D$. 
 Therefore, we can represent the current position $j$ as: $j = |B| + |D| + 1$
 
 We can represent the new cost of access of $x_i$ as: $C_i = |B| + |D| + 1$. 
 We know that every element $D$ which is now before $x_i$ started out after $x_i$, so there are $|D|$ tokens in the $x_i$'s piggy bank. 
-We can spend these tokens to cover the cost of passing over those $|D|$ elements, but we must still pay the cost: $C_i = |B| + 1$
+We can spend these tokens to cover $|D|$ units of the actual access cost, leaving $|B| + 1$ units to be paid. 
 
 As we move $x_i$ to the front, $|B|$ tokens enter $x_i$'s piggy bank, since they represent elements that were before and are now after $x_i$. 
 However, we must still cover the cost $|B| + 1$. Because $x_i$ was initially at position $i$, we know that $|B| \leq (i-1)$. 
-Therefore, the maximum cost of any access of $x_i$ that is left to be paid after paying the accumulated $|D|$ tokens is: $C_i \leq i$.
+Therefore, the maximum actual cost of any access of $x_i$ that is left to be paid after paying the accumulated $|D|$ tokens is: $|B| + 1 \leq i$.
 
 In the process of accessing $x_i$, we must create the $|B|$ tokens, while also actually accessing the element. 
 Thus, the operation must access the element, spend the $|D|$ tokens, and accumulate the $|B|$ tokens. 
-We can express this as: 
-$C_i = |B| + |D| + 1 - |D| + |B|$. 
-This simplifies to: $C_i = 2|B| + 1$. 
+We can express the accounting cost $A_i$ for the number of tokens as: 
 
-Inserting the equation we found for be, we get: 
-$C_i \leq 2(i - 1) + 1 = 2i - 1 < 2i$
+$A_i =  C_i - \text{(tokens spent)} + \text{(tokens created)}$  
 
-Therefore, this operation costs at most $2i$. This piggy bank argument establishes that the accounting cost of any MTF operation $o$ 
-is less than twice the cost of the comparable naive algorithm. 
+$A_i = |B| + |D| + 1 - |D| + |B|$. 
 
-We can expand this over the whole sequence of $m$ elements: 
+
+This simplifies to: $A_i = 2|B| + 1$. 
+
+Using the bound we found for $|B|$, we get: 
+$A_i \leq 2(i - 1) + 1 = 2i - 1 < 2i$
+
+Therefore, the accounting cost of this operation is at most $2i$. 
+The sum of the accounting costs is an upper bound for actual cost of the sequence of MTF operations. 
+This is because each time a token is spent, it was deposited earlier, and each time a token is deposited, it contributes to the accounting cost. 
+Therefore, this $2i$ upper bound represents the tokens that were deposited but never needed. Because there are initially zero tokens 
+and every token spent was deposited, the sum of the accounting cost is at least the total MTF cost. 
+From here, we sum the accounting cost bounds over the sequence of $m$ operations.
 
 $C_{MTF} \leq (2i_1 + 2i_2 + 2i_3 + ... + 2i_m)$
 
@@ -288,11 +295,11 @@ $C_{init} = i_1 + i_2 + i_3 + ... + i_m$
 
 Putting this together:
 
-$C_{MTF} \leq (2i_1 + 2i_2 + 2i_3 + ... + 2i_m) = 2 * C_{init}$
+$C_{MTF} \leq (2i_1 + 2i_2 + 2i_3 + ... + 2i_m) = 2 \cdot C_{init}$
 
 Therefore:
 
-$C_{MTF} \leq 2 * C_{init}$
+$C_{MTF} \leq 2 \cdot C_{init}$
 
 \item (17 points) Now let $C_{static}$ be the smallest possible cost among all fixed lists.  In other words, given the same sequence of lookups, 
 each fixed list (without MTF) has some cost, and let $C_{static}$ be the minimum of those costs. 
@@ -302,8 +309,42 @@ Hint: Think about your bank or potential function argument from the previous par
 What if you redefine it to be relative to the optimal list, rather than the initial list?  Then what is the initial bank/potential value? 
 How does this affect the amortized analysis?
 
-In the last problem, we compared the MTF list to the original list. In this list, we define it relative to the optimal list, 
-which is organized by number of accesses. 
+We define $L$ to be the list where the cost of the $m$ operations is $C_{static}$.
+
+In the last problem, we compared the MTF list to the original list. In this list, we define it relative to the optimal list,  organized by number of accesses. 
+I define the cost of each access to element $x_i$ in the MTF algorithm similar to in the previous part; 
+however, instead of considering sets $F$ and $G$ to contain the elements originally before and after $x_i$, 
+we define $F$ to be the elements that exist in $L$ before $x_i$ and $G$ to be the elements that exist in $L$ after $x_i$. 
+Therefore, the cost to access element $x_i$ can be written as follows: $C_{MTF} = |F| + |G| + 1$. 
+
+A key difference betweem this problem and the above is that the initial number of tokens is not necessarily zero, 
+since there could exist elements within $G$ since the initial list and $L$ may disagree on element ordering. 
+Therefore, we consider the maximum initial number of tokens in $x_i$'s piggy bank. 
+Since we consider $1$ token is added based on a pair mismatch, there are $\binom{n}{2}$ pairs in the list, and therefore at most $\binom{n}{2}$ tokens. 
+
+Since $\binom{n}{2} =\frac{n!}{2! \cdot (n-2)!} = \frac{n \cdot (n-1)}{2} = \frac{n^2 - n}{2}$, 
+we can set up the following upper bound for the number of tokens: $\text{initial num tokens} \leq \binom{n}{2} < n^2$. 
+
+We consider the the accounting cost $A_i$ for an access to $x_i$ to determine the number of tokens. 
+This yields the following equation: $A_i = |F| + |G| + 1 - |G| + |F| = 2|F| + 1$. 
+
+From here, we consider the value for $|F|$. Let us assume that element $x_i$ is in position $k$ in $L$. Therefore, $|F| = k - 1$. 
+We can therefore write the accounting cost as $A_i = 2k - 1 < 2k$. 
+This establishes a similar inequality as that in the previous problem. To access element $x_i$ in $L$, we pay $k$. 
+Therefore, we can set up the following inequality for the access of any one element: $A_{i} < 2k$. 
+Summing over all $m$ elements, we get: $\sum_{i}^{m}(A_i) < 2 \cdot C_{static}$
+
+However, we cannot prove the accounting cost to be equal to the actual cost of the MTF operation. 
+This is because we begin with a certain number of tokens, which is strictly less than $n^2$. 
+To find the actual cost, we must compute the number of tokens $T$ spent over $m$ operations.
+We consider $T_0$ and $T_m$ to be the initial and final number of tokens, respectively: $C_{MTF} = \sum_{i}^{m}(A_i) + (T_0 - T_m)$
+
+Since $T_m \geq 0$, we can write this as the following inequality: $C_{MTF} \leq \sum_{i}^{m}(A_i) + T_0$. 
+Since the upper bound for the number of tokens is $n^2$, we can substitute that into the equation to yield: $C_{MTF} \leq \sum_{i}^{m}(A_i) + n^2$.
+
+$C_{MTF} < \sum_{i}^{m}(A_i) + n^2$. Therefore, $C_{MTF} - n^2 < \sum_{i}^{m}(A_i) < 2 \cdot C_{static}$. 
+
+Thus, we can conclude: $C_{MTF} < 2 \cdot C_{static} + n^2$.
 
 \end{enumerate}
 
@@ -410,7 +451,7 @@ Let us consider a case where the last element of $H$ is the smallest. Therefore,
 it traverses each of the $(\log k) + 1$ levels of the tree, meaning that it has a time complexity of $O((\log k) + 1)$, or $O(\log k)$.
 
 Therefore, taken together, the process of extracting the maximum of $H$ with $k$ elements, inserting a new element, and finding the new maximum 
-has $2$ $O(\log k)$ and $1$ $O(1)$ processes performed sequentially, meaning the time is $ 2 * O(\log k) + O(1)$, which simplifies to $O(\log k)$. 
+has $2$ $O(\log k)$ and $1$ $O(1)$ processes performed sequentially, meaning the time is $ 2 \cdot O(\log k) + O(1)$, which simplifies to $O(\log k)$. 
 For each of the $n$ elements of $A$, some combination of these processes occur -- either an \verb|insert()| for the first $k$ elements, 
 a \verb|find_max(H)| when the $k$ smallest elements remain the same, or all $3$. Thus, since this $O(\log k)$ process occurs $n$ times, 
 the algorithm has an overall time complexity of $O(n \log k)$.

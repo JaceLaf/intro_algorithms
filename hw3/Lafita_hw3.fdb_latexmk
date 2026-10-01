@@ -1,7 +1,7 @@
 # Fdb version 4
-["pdflatex"] 1790876140.27842 "/home/jason-lafita/intro_algorithms/hw3/Lafita_hw3.tex" "Lafita_hw3.pdf" "Lafita_hw3" 1790876141.06138 0
+["pdflatex"] 1790891653.2683 "/home/jason-lafita/intro_algorithms/hw3/Lafita_hw3.tex" "Lafita_hw3.pdf" "Lafita_hw3" 1790891654.3042 0
   "/etc/texmf/web2c/texmf.cnf" 1781025547.25108 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/jason-lafita/intro_algorithms/hw3/Lafita_hw3.tex" 1790876140.00515 24736 926997f8bc0c8a404ed236c6e5ac8c41 ""
+  "/home/jason-lafita/intro_algorithms/hw3/Lafita_hw3.tex" 1790891653.04747 27943 72cae0fc65db3c4bcbdda388e762a305 ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1246382020 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
@@ -26,9 +26,11 @@
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmtt10.tfm" 1136768653 768 1321e9409b4137d6fb428ac9dc956269 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb" 1248133631 34811 78b52f49e893bcba91bd7581cdc144c0 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb" 1248133631 32080 340ef9bf63678554ee606688e7b5339d ""
+  "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb" 1248133631 30251 6afa5cb1d0204815a708a080681d4674 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb" 1248133631 36299 5f9df58c2139e7edcf37c8fca4bd384d ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb" 1248133631 35469 70d41d2b9ea31d5d813066df7c99281c ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb" 1248133631 35752 024fb6c41858982481f6968b5fc26508 ""
+  "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb" 1248133631 32734 69e00a6b65cedb993666e42eedb3d48f ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb" 1248133631 32726 0a1aea6fcd6468ee2cf64d891f5c43c8 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb" 1248133631 32569 5e5ddc8df908dea60932f3c484a54c0d ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb" 1248133631 32626 4f5c1b83753b1dd3a97d1b399a005b4b ""
@@ -195,9 +197,9 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1707919699 40399 f2c302f7d2af602abb742093540a5834 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1789503060.89473 165012 f177baa1c39a3ebd62c3096a43521a0d ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1789503090 6831105 2a71ac4d6e9f71fa7d13dd0979fbab26 ""
-  "Lafita_hw3.aux" 1790876141.00457 559 c17885abc652b44157cbbddcd886a413 "pdflatex"
-  "Lafita_hw3.out" 1790876141.00557 709 5d6490a8e5692c69a5459534c2c094c1 "pdflatex"
-  "Lafita_hw3.tex" 1790876140.00515 24736 926997f8bc0c8a404ed236c6e5ac8c41 ""
+  "Lafita_hw3.aux" 1790891654.20046 559 5cf8ef3da9cc66717a6644b9c87e0298 "pdflatex"
+  "Lafita_hw3.out" 1790891654.20046 709 5d6490a8e5692c69a5459534c2c094c1 "pdflatex"
+  "Lafita_hw3.tex" 1790891653.04747 27943 72cae0fc65db3c4bcbdda388e762a305 ""
   (generated)
   "Lafita_hw3.aux"
   "Lafita_hw3.log"
