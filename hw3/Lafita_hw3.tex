@@ -200,10 +200,33 @@ Then when we split a node we use the $1$ in its bank to pay for the split.  In o
 This argument unfortunately does not work.  Explain why this banking scheme \emph{does not} imply that the amortized number of splits is $O(1)$. 
 Your explanation should be convincing, but does not need to be a fully formal proof
 
-TODO
+This approach is trying to prove that over $m$ insertions, the number of splits is bounded by $O(m)$. 
+We must think of the case above, where the insertion triggers $\Theta(\log n)$ splits. 
+Using this approach, this means that each of those $\Theta(\log n)$ nodes has $1$ token stored, which are then used to pay for the split. 
+Thus, the banking scheme does accurately show that each split has the tokens to pay for it.
+
+However, the approach does not establish that the amount added to the bank over the sequence is sufficient to bound the total number of split. 
+Simply showing that each split has the tokens to pay for it does not establish that the total number of splits is bounded by $O(m)$, 
+as the tokens used to pay for the split may have been accumulated over many previous insertions. 
+This bank approach does show that each individual $m$ split can be paid for, but it does not show that the number of splits is bounded by $O(m)$
+Therefore, although the bank can pay for each individual split, this does not prove a constant amortized number of splits per insertion.
 
 \item (11 points) Show how to modify this argument to work: use a bank at each node to prove that the amortized number of splits is $O(1)$. 
 Hint: the previous part shows that this bank cannot just equal $1$ if the node is full and $0$ otherwise.
+
+I will use the approach that each time an element is added to one of the nodes in the tree $1$ token is added to that node's bank. 
+Thus, since a node is full when it has $3$ elements, it will have accumulated $3$ tokens. 
+We can establish that over the course of $m$ insertions, $m$ tokens have been added to the bank. 
+
+Now, we can move on to proving that the total number of splits is bounded by $O(m)$. 
+On the splitting of a node, $1$ token is spent, leaving $2$ tokens. 
+Since a split occurs when a node has $3$ elements, the resulting node has $2$ children. 
+Thus, each of those $2$ resulting nodes of $1$ element each can get $1$ token. 
+
+Therefore, we know that every split that occurs can be paid for by a token that has been previously deposited. 
+Since each of the $m$ insertions deposits $1$ token, at most $m$ tokens are deposited total. 
+Therefore, we can prove that there are at most $m$ splits over $m$ insertions, which creates the upper bound $O(m)$ for the number of splits. 
+Since we have shown $O(m)$ splits over $m$ insertions, we can therefore conclude a constant amortized number of splits per insertion.
 
 TODO
 
