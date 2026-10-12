@@ -353,12 +353,12 @@ From here, we consider the value for $|F|$. Let us assume that element $x_i$ is 
 We can therefore write the accounting cost as $A_i = 2k - 1 < 2k$. 
 This establishes a similar inequality as that in the previous problem. To access element $x_i$ in $L$, we pay $k$. 
 Therefore, we can set up the following inequality for the access of any one element: $A_{i} < 2k$. 
-Summing over all $m$ elements, we get: $\sum_{i}^{m}(A_i) < 2 \cdot C_{static}$
+Summing over all $m$ operations, we get: $\sum_{i=0}^{m}(A_i) < 2 \cdot C_{static}$
 
 However, we cannot prove the accounting cost to be equal to the actual cost of the MTF operation. 
 This is because we begin with a certain number of tokens, which is strictly less than $n^2$. 
 To find the actual cost, we must compute the number of tokens $T$ spent over $m$ operations.
-We consider $T_0$ and $T_m$ to be the initial and final number of tokens, respectively: $C_{MTF} = \sum_{i}^{m}(A_i) + (T_0 - T_m)$
+We consider $T_0$ and $T_m$ to be the initial and final number of tokens, respectively: $C_{MTF} = \sum_{i=0}^{m}(A_i) + (T_0 - T_m)$
 
 Since $T_m \geq 0$, we can write this as the following inequality: $C_{MTF} \leq \sum_{i}^{m}(A_i) + T_0$. 
 Since the upper bound for the number of tokens is $n^2$, we can substitute that into the equation to yield: $C_{MTF} \leq \sum_{i}^{m}(A_i) + n^2$.

@@ -484,33 +484,7 @@ $T(n) = \Theta(n^{log_{4}{6}})$
 
 \end{enumerate}
 
-
 \section{Group Sorting (50 points)}
-We say that an array $A$ of size $n$ is \emph{$k$-group sorted} if it can be divided into $k$ consecutive groups, each of size $n/k$, such that the elements in each group are larger than the elements in earlier groups, and smaller than elements in later groups. The elements within each group need not be sorted.   
-
-For example, the following array is $4$-group sorted:
-\[
-\begin{array}{|c|c|c|c||c|c|c|c||c|c|c|c||c|c|c|c|}
-\hline
-1 &2 &4 &3 &7 &6 &8 &5 &10 &11 &9 &12 &15 &13 &16 &14\\
-\hline
-\end{array}
-\]
-
-Note that every array is $1$-group-sorted, and only sorted arrays are $n$-group sorted.  You may assume that all elements are distinct, and if you want to you may assume that $n$ and $k$ are powers of $2$. 
-
-Describe an algorithm that $k$-group-sorts an array in (worst-case) time $O(n \log k)$.  In other words, in at most $O(n \log k)$ time it must turn an array which is not $k$-group sorted into one that is.  Prove correctness and running time.
-
-\bigbreak
-
-Algorithm:
-
-I assume $n$ and $k$ are powers of 2. 
-I will use a modified version of quicksort for this algorithm. I use the BFPRT algorithm described in class to find the most median to use as a pivot point, which takes $O(n)$ time. 
-From here, I will recursively perform partitions of the list so that the first level finds the median of the array and splits it into $2$ equally-sized groups, 
-the second finds the median of each of the two groups and splits those in half, yielding $4$ groups, 
-the same pattern repeats to create $8$ groups, and the algorithm continues until the array is divided into $k$ groups. 
-Each \section{Group Sorting (50 points)}
 We say that an array $A$ of size $n$ is \emph{$k$-group sorted} if it can be divided into $k$ consecutive groups, each of size $n/k$, such that the elements in each group are larger than the elements in earlier groups, and smaller than elements in later groups. The elements within each group need not be sorted.   
 
 For example, the following array is $4$-group sorted:
