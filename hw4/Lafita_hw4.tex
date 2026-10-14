@@ -283,10 +283,68 @@ set $(r_y \rightarrow cardinality) = (r_x \rightarrow cardinality) + (r_y \right
 \item (25 points) Prove that the worst-case running time of any operation is $O(\log n)$, where $n$ is the number of Make-Set operations 
 (i.e., the number of elements).  Hint: can you bound the depth/height of a tree by its cardinality?
 
+We first prove that the depth of a tree is bounded by its cardinality by strong induction.
+We will show that for any tree $T$ within Union-Find structure $F$, the depth $d$ is less than or equal to $\log_{2}$ of cardinality $c$ -- 
+that is, $d_{T} \leq \log_{2}(c_{T})$. Importantly, we define depth to be the maximum path size from root to leaf of a tree.
+
+Base case: After performing Make-Set($x$), tree $T$ with $1$ node is created, meaning $T$ has a depth of $0$. 
+Since $c_T$ is set to $1$, we can see that $d_{T} = 0 \leq \log_{2}(c_{T}) = 0$. Thus, the base case holds.
+
+Inductive case: We assume that for all possible cardinalities $1$-$k$ of $T$, $d_{T} \leq c_{T}$. 
+We will prove that a tree $T$ with cardinality $k+1$ has a depth less than $c_{T}$.
+To create $T$ with cardinality $k+1$, trees $T$ and $R$, where $c_{T} \geq c_{R}$ and $c_{T} + c_{R} = k+1$, must have a union performed. 
+We can see that the cardinality of $c_T$ must be incremented by at least $1$, as $c_{R}$ has cardinality at least $1$. 
+By the inductive hypothesis, $d_{T} \leq \log_{2}(c_{T})$ and $d_{R} \leq \log_{2}(c_{R})$. 
+The union operation will join the root of $R$ to the root of $T$. 
+
+The cases for the resulting depth of $T$ are as follows:
+\begin{enumerate}[label=(\arabic*), noitemsep]
+\item $d_{T} = d_{R}$: $d_{T} = d_{T \text{prior}} + 1 = d_{R} + 1$. We know that $d_{R} \leq \log_{2}(c_{R})$, 
+so $d_{R} + 1 \leq \log_{2}(c_{R}) + 1 = \log_{2}(c_{R}) + \log_{2}(2) = \log_{2}(2c_{R})$. We know that $c_{T} \geq 2c_{R}$, 
+since $c_{T} = c_{T \text{prior}} + c_{R}$ and $c_{T \text{prior}} \geq c_{R}$, so $c_{T}$ must be at least double $c_{R}$. 
+Therefore, $d_{T} = d_{T \text{prior}} + 1 = d_{R} + 1 \leq \log_{2}(2c_{R}) \leq \log_{2}(c_{T})$, so $d_{T} \leq \log_{2}(c_{T})$, and this case holds. 
+\item $d_{T} > d_{R}$: $d_{T} = d_{T \text{prior}}$. Since $d_{T \text{prior}} \leq \log_{2}(c_{T \text{prior}})$ and $c_{T}$ increases during the union, 
+then $d_{T}$ must remain less than or equal to $\log_{2}(c_{T \text{prior}} + c_{R})$. Thus, $d_{T} \leq \log_{2}(c_{T})$, and this case holds.
+\item $d_{T} < d_{R}$: $d_{T} = d_{R} + 1$. We know that $d_{R} \leq \log_{2}(c_{R})$, 
+so $d_{R} + 1 \leq \log_{2}(c_{R}) + 1 = \log_{2}(c_{R}) + \log_{2}(2) = \log_{2}(2c_{R})$. We know that $c_{T} \geq 2c_{R}$, 
+since $c_{T} = c_{T \text{prior}} + c_{R}$ and $c_{T \text{prior}} \geq c_{R}$, so $c_{T}$ must be at least double $c_{R}$. 
+Therefore, $d_{T} = d_{R} + 1 \leq \log_{2}(2c_{R}) \leq \log_{2}(c_{T})$, so $d_{T} \leq \log_{2}(c_{T})$, and this case holds. 
+\end{enumerate}
+
+Therefore, in every case, the inductive case holds. 
+
+In proving the base and inductive case, we have proven that the depth of a tree is bounded by $\log_{2}$ of its cardinality. 
+
+Each individual set is initially created with a cardinality of $1$. 
+We will prove that the cardinality of a tree is equal to the number of nodes in the tree by strong induction.
+
+Base case: A newly created set has $1$ node, and a cardinality of $1$. Thus, this case holds.
+
+Inductive case: We assume that a tree with $1$ to $k$ nodes has a cardinality of $1$ to $k$ respectively. 
+We prove that a tree with $k+1$ nodes has a cardinality of $k+1$. A tree with $k+1$ cardinality is created when $2$ trees 
+whose cardinalities sum to $k+1$ are joined. By the inductive hypothesis, we know that the trees being unioned have 
+a number of nodes equal to their cardinality, so the number of nodes in both trees sums to $k+1$. 
+The resulting tree has all of the nodes in both of the trees, or the sum of the number of nodes in each tree, $k+1$. 
+Thus, since the new number of nodes in the tree and the new cardinality 
+is both $k+1$, the cardinality and number of nodes remains equal, so the inductive step holds.
+
+In proving the base and inductive case, we have proven that the cardinality of a tree is equal to the number of nodes in a tree.
+
+We can clearly see that Make-Set($x$) runs in $O(1)$ time, but we must prove the runtime of Find($x$) and Union($x$, $y$). 
+Both of these operations involve traversing at least $1$ tree from a node to the root. Therefore, the runtime of these operations is bounded at $O(d)$. 
+However, we know that the depth of the tree is bounded by the cardinality, so it is strictly less than $\log_{2}(c)$. 
+Thus, we can conclude that any operation is bounded by $O(\log c)$. However, we proved that $c = \# \text{number of nodes}$, 
+and the maximum number of nodes is at most the number of sets that have been created, or $n$, so $c \leq n$ for any tree. 
+Therefore, both Find($x$) and Union($x$, $y$) have a runtime of $O(\log n)$.
+
+Thus, the total runtime of any single operation is $O(\log n)$. 
+
 \item (25 points) We now want to provide a matching lower bound not just on the worst-case running time, but even on the amortized running time. 
 So suppose that we first do $n$ Make-Set operations (so there are $n$ elements).  Give a sequence of $O(n)$ Union operations which cumulatively take 
 $\Omega(n \log n)$ time (implying that the amortized cost of an operation is $\Omega(\log n)$).  Each union operation should be a union of two distinct sets, 
 i.e., you should never call Union(x,y) on elements x and y that are in the same set.
+
+TODO today
 
 \end{enumerate}
 

@@ -1,8 +1,8 @@
 # Fdb version 4
-["pdflatex"] 1791936532.41741 "/home/jason-lafita/intro_algorithms/hw4/Lafita_hw4.tex" "Lafita_hw4.pdf" "Lafita_hw4" 1791936532.82347 0
+["pdflatex"] 1792012988.04122 "/home/jason-lafita/intro_algorithms/hw4/Lafita_hw4.tex" "Lafita_hw4.pdf" "Lafita_hw4" 1792012988.45893 0
   "/etc/texmf/web2c/texmf.cnf" 1781025547.25108 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/home/jason-lafita/.texlive2023/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1095.600pk" 1790275413.63353 12644 2cbd1fa7a3472ad9a9949f990f4313cc ""
-  "/home/jason-lafita/intro_algorithms/hw4/Lafita_hw4.tex" 1791936532.32641 13747 e2b91a0515607364951c65c4f61ddde1 ""
+  "/home/jason-lafita/intro_algorithms/hw4/Lafita_hw4.tex" 1792012987.95812 18458 18e80199dad760d2612c64a79ae2b12f ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/jknappen/ec/tcrm1095.tfm" 1136768653 1536 02c06700a42be0f5a28664c7273f82e7 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
@@ -201,9 +201,9 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1707919699 40399 f2c302f7d2af602abb742093540a5834 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1789503060.89473 165012 f177baa1c39a3ebd62c3096a43521a0d ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1789503090 6831105 2a71ac4d6e9f71fa7d13dd0979fbab26 ""
-  "Lafita_hw4.aux" 1791936532.77563 397 6c76156f8268b4c77b335b18bd8fdde5 "pdflatex"
-  "Lafita_hw4.out" 1791936532.77563 315 c5ad77427dc08d791957f822c50422de "pdflatex"
-  "Lafita_hw4.tex" 1791936532.32641 13747 e2b91a0515607364951c65c4f61ddde1 ""
+  "Lafita_hw4.aux" 1792012988.41312 397 c1209b06bcd6a7c358d27f9f92248a4d "pdflatex"
+  "Lafita_hw4.out" 1792012988.41412 315 c5ad77427dc08d791957f822c50422de "pdflatex"
+  "Lafita_hw4.tex" 1792012987.95812 18458 18e80199dad760d2612c64a79ae2b12f ""
   (generated)
   "Lafita_hw4.aux"
   "Lafita_hw4.log"
