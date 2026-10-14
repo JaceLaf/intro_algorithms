@@ -196,7 +196,7 @@ $\textbf{Pr}_{h \sim H}[h(x) = h(y)] = \sum_{a=0}^{M-1} (\textbf{Pr}_{h \sim H}[
 
 $\textbf{Pr}_{h \sim H}[h(x) = h(y)] \leq \sum_{a=0}^{M-1} (\frac{1}{M^2})$
 
-Simplifying by calculating the summation:
+Simplifying by summing over the $M$ terms of the summation:
 
 $\textbf{Pr}_{h \sim H}[h(x) = h(y)] \leq \frac{M}{M^2}$
 
@@ -206,9 +206,52 @@ We have proven that the definition of a universal hash family applies to any $2$
 Thus, any $2$-universal hash family is a universal hash family
 
 \item (25 points) Prove that for every $u$ and $b$ with $u > b \geq 1$ there is some universal hash family from $U$ to $\{0,1,\dots, M-1\}$ 
-(with $|U| = 2^u$ and $M = 2^b$) which is \emph{not} a $2$-universal hash family.  Hint: think about the constructions from class and the textbook.
+(with $|U| = 2^u$ and $M = 2^b$) which is \emph{not} a $2$-universal hash family. Hint: think about the constructions from class and the textbook.
 
-TODO today
+To prove that any given construction leads to a universal hash family, we must prove:
+
+$\textbf{Pr}_{h \sim H}[h(x) = h(y)] \leq \frac{1}{2^b}$ for all $x,y \in U$ with $x \neq y$.
+
+To prove that it is not a $2$-universal hash family, we must prove that: 
+
+$\textbf{Pr}_{h \sim H}[h(x) = i \land h(y) = j] > \frac{1}{M^2}$ for some distinct $x, y \in U$. 
+
+We first consider the construction in \textbf{Theorem 10.3.5} in the lexture notes, which states:
+
+$\textbf{Pr}_{h \sim H}[h(x) = h(y)] \leq \frac{1}{M}$ for all $x \neq y \in \{0, 1\}^{u}$
+
+In this theorem, $M = 2^b$ and $|\{0, 1\}^{u}| = 2^{u}$, so we can see that this represents a universal hash family for every $u$ and $b$, 
+as per the specs in the question.
+
+However, we must now examine its $2$ universality before concluding the construction in class fits this proof. 
+Any hash function in this family is defined as $h(x) = Gx \mod 2$, where $G$ is a uniformly chose $b \times u$ matrix. 
+Thus, there are $2^{bu}$ possible matrices (and therefore $2^{bu}$ functions in the hash family). 
+By the definition of the hash function, any output $h(x)$ is a $b$-row, $1$ column matrix. 
+We consider $2$ distinct inputs, $x$ and $y$, and two output possibilities $i$ and $j$.
+
+We consider $\textbf{Pr}_{G}[Gx = i \land Gy = j] = \frac{\# \text{ of matrices where } Gx = i \land Gy = j}{2^{bu}}$. 
+Beginning with a simpler constraint, we consider $\textbf{Pr}_{G}[Gx = i]$. For this, we choose a nonzero $x$. 
+We can break this down by digit, and determine that $Gx = i$ means $g_1 \cdot x = i_1 \mod 2$, $g_2 \cdot x = i_2 \mod 2$, $g_3 \cdot x = i_3 \mod 2$, 
+... , $g_b \cdot x = i_b \mod 2$. We consider a single row $g_k$, with $u$ entries, so there are $2^u$ possible rows. 
+Since $x \neq 0$, the number of rows $g_k$ satisfying $g_k \cdot x = i_k$ is $2^{u-1}$. 
+Each of the $b$ rows of $i$ has $2^{u-1}$ possible matrices satisfying it, so by multiplication, there are $2^{b(u-1)}$. Therefore: 
+
+$\textbf{Pr}_{G}[Gx = i] = \frac{2^{b(u-1)}}{2^{bu}} = \frac{1}{2^{b}} = \frac{1}{M}$
+
+Now, we consider a $y$ equal to $0$. Since we consider $x \neq 0$, this satisfies $x \neq y$. 
+Since $y = 0$, we know that $Gy = j = 0$ regardless of what matrix $G$ is chosen. 
+Therefore, $\textbf{Pr}_{G}[Gy = j] = 1$.
+
+Since $Gy = j$ is always true, the logic value $(Gx = i \land Gy = j) = (Gx = i \land \text{TRUE}) = (Gx = i)$. 
+Therefore, we can compute the probability of $\textbf{Pr}_{G}[Gx = i \land Gy = j]$ as follows: 
+
+$\textbf{Pr}_{G}[Gx = i \land Gy = j] = \textbf{Pr}_{G}[Gx = i] = \frac{1}{M} > \frac{1}{M^2}$ for all $M > 1$.
+
+Since $M$ is at minimum $2$, we have found an $x$ and $y$ within this universal hash family for which: 
+
+$\textbf{Pr}_{h \sim H}[h(x) = i \land h(y) = j] > \frac{1}{M^2}$.
+
+Therefore, we have proven the existence of some hash family for all $u, b$ where $u > b \geq 1$ which is universal but not $2$-universal.
 
 \end{enumerate}
 
