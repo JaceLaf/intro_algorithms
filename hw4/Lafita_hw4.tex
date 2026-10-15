@@ -224,21 +224,30 @@ In this theorem, $M = 2^b$ and $|\{0, 1\}^{u}| = 2^{u}$, so we can see that this
 as per the specs in the question.
 
 However, we must now examine its $2$ universality before concluding the construction in class fits this proof. 
-Any hash function in this family is defined as $h(x) = Gx \mod 2$, where $G$ is a uniformly chose $b \times u$ matrix. 
-Thus, there are $2^{bu}$ possible matrices (and therefore $2^{bu}$ functions in the hash family). 
-By the definition of the hash function, any output $h(x)$ is a $b$-row, $1$ column matrix. 
-We consider $2$ distinct inputs, $x$ and $y$, and two output possibilities $i$ and $j$.
+Any hash function in this family is defined as $h(x) = Gx \mod 2$, where $G$ is a uniformly chosen $b \times u$ matrix. 
+Thus, there are $2^{bu}$ possible matrices $G$. By the definition of the hash function, any output $h(x)$ is a binary vector of length $b$. 
+We consider $2$ distinct inputs, $x$ and $y$, and two output targets $i$ and $j$. Thus: 
 
-We consider $\textbf{Pr}_{G}[Gx = i \land Gy = j] = \frac{\# \text{ of matrices where } Gx = i \land Gy = j}{2^{bu}}$. 
-Beginning with a simpler constraint, we consider $\textbf{Pr}_{G}[Gx = i]$. For this, we choose a nonzero $x$. 
-We can break this down by digit, and determine that $Gx = i$ means $g_1 \cdot x = i_1 \mod 2$, $g_2 \cdot x = i_2 \mod 2$, $g_3 \cdot x = i_3 \mod 2$, 
-... , $g_b \cdot x = i_b \mod 2$. We consider a single row $g_k$, with $u$ entries, so there are $2^u$ possible rows. 
-Since $x \neq 0$, the number of rows $g_k$ satisfying $g_k \cdot x = i_k$ is $2^{u-1}$. 
-Each of the $b$ rows of $i$ has $2^{u-1}$ possible matrices satisfying it, so by multiplication, there are $2^{b(u-1)}$. Therefore: 
+$\textbf{Pr}_{G}[Gx = i \land Gy = j] = \frac{\# \text{ of matrices } G \text{ where } Gx = i \land Gy = j}{2^{bu}}$. 
+
+We consider the first condition: 
+
+$\textbf{Pr}_{G}[Gx = i] = \frac{\# \text{ of matrices } G \text{ where } Gx = i}{2^{bu}}$. 
+
+We consider the first of these $2$ probabilities and choose a nonzero $x$, which is possible in the $2^{u}$ universe where $u > 1$. 
+We can break this down by each individual row $g$ of $G$, so $g_1 \cdot x = i_1 \mod 2$, $g_2 \cdot x = i_2 \mod 2$, 
+$g_3 \cdot x = i_3 \mod 2$, ... , $g_b \cdot x = i_b \mod 2$. 
+
+We consider a single arbitrary row $g_k$, with $u$ entries, so there are $2^u$ possibiilities for $g_k$'s value. 
+Since $x \neq 0$, at least $1$ bit in the base-$2$ representation of $x$ must be equal to $1$. 
+Let $t$ be this index such that $x_t = 1$. After $u-1$ fixed choices for every entry in $g_k$ except the $t$th, 
+there is exactly $1$ possible option $\in \{0, 1\}$ that achieves the target value for the $k$th entry of $i$. 
+This makes the number of entries in $g_k$ to choose not $u$ but $u-1$, so the number of potential rows $g_k$ satisfying $g_k \cdot x = i_k$ is $2^{u-1}$. 
+Each of the $b$ rows of $i$ has $2^{u-1}$ possible matrices satisfying it, so by multiplication, there are $2^{b(u-1)}$ input $G$ matrices. Therefore: 
 
 $\textbf{Pr}_{G}[Gx = i] = \frac{2^{b(u-1)}}{2^{bu}} = \frac{1}{2^{b}} = \frac{1}{M}$
 
-Now, we consider a $y$ equal to $0$. Since we consider $x \neq 0$, this satisfies $x \neq y$. 
+Now, we consider $\textbf{Pr}_{G}[Gy = j]$ where $y = 0$ and $j$ is a vector of $b$ $0$s. Since we consider an $x \neq 0$, this satisfies $x \neq y$. 
 Since $y = 0$, we know that $Gy = j = 0$ regardless of what matrix $G$ is chosen. 
 Therefore, $\textbf{Pr}_{G}[Gy = j] = 1$.
 
@@ -247,7 +256,7 @@ Therefore, we can compute the probability of $\textbf{Pr}_{G}[Gx = i \land Gy = 
 
 $\textbf{Pr}_{G}[Gx = i \land Gy = j] = \textbf{Pr}_{G}[Gx = i] = \frac{1}{M} > \frac{1}{M^2}$ for all $M > 1$.
 
-Since $M$ is at minimum $2$, we have found an $x$ and $y$ within this universal hash family for which: 
+Since $M = 2^{b}$ and $b \geq 1$, $M \geq 2$, so we have found an $x$ and $y$ within this universal hash family for which: 
 
 $\textbf{Pr}_{h \sim H}[h(x) = i \land h(y) = j] > \frac{1}{M^2}$.
 
@@ -315,8 +324,8 @@ Therefore, in every case, the inductive case holds.
 
 In proving the base and inductive case, we have proven that the depth of a tree is bounded by $\log_{2}$ of its cardinality. 
 
-Each individual set is initially created with a cardinality of $1$. 
-We will prove that the cardinality of a tree is equal to the number of nodes in the tree by strong induction.
+Now, to connect the cardinality to the number of possible nodes in a tree, 
+we will prove that the cardinality of a tree is equal to the number of nodes in the tree by strong induction.
 
 Base case: A newly created set has $1$ node, and a cardinality of $1$. Thus, this case holds.
 
@@ -348,7 +357,7 @@ We seek to find a sequence where, after $n$ Make-Set operations, there are $O(n)
 meaning the amortized cost per operation is $\Omega(\log n)$. 
 
 To begin, there are $n$ distinct sets, each with $1$ node and therefore a cardinality of $1$ (as we proved above). 
-The sequence of Union operations behaves in layers to eventually $1$ tree of $\frac{n}{2}$ nodes, leaving $\frac{n}{2}$ sets of $1$ node. 
+The sequence of Union operations behaves in layers to eventually create $1$ tree of $\frac{n}{2}$ nodes, leaving $\frac{n}{2}$ sets of $1$ node. 
 We consider the $\frac{n}{2}$ trees being merged in the following. 
 We first merge each tree (of one node) with another partner. This yields $\frac{n}{4}$ trees with $2$ nodes. 
 Then, we merge each of the $2$-node trees with another, yielding $\frac{n}{8}$ trees, each with $4$ nodes. 
