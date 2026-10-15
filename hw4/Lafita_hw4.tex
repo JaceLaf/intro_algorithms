@@ -342,9 +342,60 @@ Thus, the total runtime of any single operation is $O(\log n)$.
 \item (25 points) We now want to provide a matching lower bound not just on the worst-case running time, but even on the amortized running time. 
 So suppose that we first do $n$ Make-Set operations (so there are $n$ elements).  Give a sequence of $O(n)$ Union operations which cumulatively take 
 $\Omega(n \log n)$ time (implying that the amortized cost of an operation is $\Omega(\log n)$).  Each union operation should be a union of two distinct sets, 
-i.e., you should never call Union(x,y) on elements x and y that are in the same set.
+i.e., you should never call Union($x$, $y$) on elements x and y that are in the same set.
 
-TODO today
+We seek to find a sequence where, after $n$ Make-Set operations, there are $O(n)$ insertion operations which take a total of $\Omega(n \log n)$ time, 
+meaning the amortized cost per operation is $\Omega(\log n)$. 
+
+To begin, there are $n$ distinct sets, each with $1$ node and therefore a cardinality of $1$ (as we proved above). 
+The sequence of Union operations behaves in layers to eventually $1$ tree of $\frac{n}{2}$ nodes, leaving $\frac{n}{2}$ sets of $1$ node. 
+We consider the $\frac{n}{2}$ trees being merged in the following. 
+We first merge each tree (of one node) with another partner. This yields $\frac{n}{4}$ trees with $2$ nodes. 
+Then, we merge each of the $2$-node trees with another, yielding $\frac{n}{8}$ trees, each with $4$ nodes. 
+This process continues until there is $1$ set with $\frac{n}{2}$ nodes. We see that since the number of sets is halved after each round of Unions, 
+so there must be $\log (\frac{n}{2})$, or $\log (n) - 1 = O(\log n)$ rounds of merges to yield $1$ set with $n$ nodes. 
+From here, we merge the $\frac{n}{2}$ remaining trees of $1$ node with the $1$ tree of $\frac{n}{2}$ nodes.
+
+To prove that this sequence has $O(n)$ operations each with $\Omega(\log n)$ amortized cost, we must first prove that there are $O(n)$ Union operations. 
+We can do so by summing over the number of operations at each level. At the first level, there are $\frac{n}{4}$ Unions, 
+at the second, there are $\frac{n}{8}$, and this repeats $\log n$ times. Therefore, we can represent this sum as follows:
+
+$\sum_{i = 1}^{\log n}(\frac{n}{2^{(i+1)}})$
+
+As $n$ is constant within this summation, we can pull it out to yield the geometric summation:
+
+$n \cdot \sum_{i = 1}^{\log n}(\frac{1}{2}^{(i+1)}) = n \cdot [\frac{1}{4} \cdot (\frac{1 - \frac{1}{2}^{\log (n) + 1}}{1 - \frac{1}{2}})]$
+$= n \cdot [\frac{1}{4} \cdot (2 \cdot (1 - 2^{\log (n) + 1(-1)}))] = n \cdot [\frac{1}{2} \cdot (1 - (2^{\log (n)(-1)} \cdot 2^{1(-1)}))]$
+$= n \cdot [\frac{1}{2} \cdot (1 - (n^{-1} \cdot \frac{1}{2}))] = \frac{n}{2} \cdot (1 - \frac{1}{2n})$
+
+We can see that the term $1 - \frac{1}{2n}$ grows closer to $1$ as $n$ grows, but it always remains strictly smaller than $1$, 
+so $\frac{n}{2} \cdot (1 - \frac{1}{2n})$ grows very close to $\frac{n}{2}$ but never surpasses it, leading to an upper bound of 
+$\frac{n}{2}$ operations. 
+
+From here, we perform $\frac{n}{2}$ Unions between the remaining $\frac{n}{2}$ trees of $1$ node with the just-created tree of $\frac{n}{2}$ nodes. 
+This string of operations involves a set of at most $\frac{n}{2}$ operations, followed by $\frac{n}{2}$ operations, so it has at most 
+$\frac{n}{2} + \frac{n}{2}$ operations, or $O(n)$ operations
+
+Now, we prove an overall cost of $\Omega(n \log n)$ for these $n$ operations, meaning an amortized cost of $\Omega(\log n)$ per operation. 
+We consider the second half of the operations in the sequence where there are $\frac{n}{2}$ Union operations of a tree 
+of at least $\frac{n}{2}$ nodes with a tree of $1$ node. We will call the tree of $\frac{n}{2}$ nodes $B$ where $l_B$ is a leaf node in $B$, 
+and we will call an arbitrary $1$-node tree $S$ containing node $s$. 
+
+We know that $l_B$ has depth $\log (\frac{n}{2})$. This is because this sequence unions trees of equal cardinality at every level. 
+As per the specs of this question, when two trees of equal size are merged, the root of one tree becomes a child of the root of the other. 
+Therefore, the height increases by one.  After the first round, each tree has $2$ nodes and height $1$. 
+After the second round, each tree has $4$ nodes and height $2$. After $k$ rounds, each tree has $2^k$ nodes and height $k$. 
+Following this pattern, tree $B$ with $\frac{n}{2}$ nodes has height $\log(\frac{n}{2})$. 
+Therefore a leaf node $l_B$ has depth $\log(\frac{n}{2})$. 
+
+We consider the operation Union($s$, $l_B$). To find the root $r_B$ of $B$, 
+the algorithm must traverse the height of $B$ from $l_B$ upwards. Since $s$ is by default the root of $S$, finding the root takes $O(1)$ time. 
+As $l_B$ has depth $\log (\frac{n}{2})$, this operation must have $\Omega (\log (\frac{n}{2})) = \Omega (\log n)$ time. 
+Since there are $\frac{n}{2}$ $1$-node trees, this operation repeats $\frac{n}{2}$ times. 
+Therefore, the complete runtime of these $\frac{n}{2}$ operations is $\Omega (\frac{n}{2} \log n)$, or $\Omega (n \log n)$.
+
+In considering the second half of the operation, we have proven that this specific sequence of $O(n)$ Unions has a lower bound $\Omega (n \log n)$ time, 
+meaning the amortized time per individual Union is $\Omega (\log n)$.
 
 \end{enumerate}
 
