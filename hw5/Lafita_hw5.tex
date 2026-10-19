@@ -156,7 +156,28 @@ while($i < n$) {
 Give an instance in which this algorithm does not return the optimal solution. Also say what the optimal solution is (and its value) and 
 what the algorithm finds instead.
 
-TODO
+In general, a case where $h_{i+2} + e_{i} > h_{i+1} + e_{i+2}$ and $h_{i+1} > e_{i} + e_{i+1}$ causes the algorithm to fail. 
+In this case, the algorithm would say to do not do any assignments in week $i$, and then do the hard assignment in week $i+1$. 
+However, this is not the optimal solution, as this stops the user from getting the points that 
+could be achieved by $h_{i+2}$ and $e_{i}$. 
+
+Specifically, the instance we will calculate goes as follows for a semester of $n=3$ weeks:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Week} & \textbf{Easy Pts} & \textbf{Hard Pts} \\ \hline
+1 & 5 & 8 \\ \hline
+2 & 5 & 11 \\ \hline
+3 & 3 & 12 \\ \hline
+\end{tabular}
+\end{table}
+
+The maximum possible points that a person could as per the specs of this problem is $17$, where they do the easy assignment in Week $1$, 
+no assignment in Week $2$, and the hard assignment in Week $3$. However, this algorithm would calculate that the easy assignments in Week $1$ and $2$ 
+are less than the hard assignment in Week $2$, so the algorithm would say to do the week $2$ hard assignment, which disallows from completing 
+the hard assignment in Week $3$. Thus, they would do the easy assignment and get $14$ points, and not the optimal $17$.
 
 \item (35 points) Give an algorithm with $O(n)$ worst case running time which takes as input the values $e_1, \dots, e_n$ and $h_1, \dots, h_n$ and 
 returns the value of the optimal schedule. Prove its correctness and running time.
@@ -186,41 +207,8 @@ Given the fixed driving cost $M$ and profits $B_1, \dots B_n$ and $W_1, \dots, W
 devise an algorithm that runs in $O(n)$ time and computes the profit of an optimal schedule. 
 As always, prove correctness and running time.  
 
+\bigbreak
+
 TODO
 
 \end{document}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
