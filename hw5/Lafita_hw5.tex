@@ -156,8 +156,8 @@ while($i < n$) {
 Give an instance in which this algorithm does not return the optimal solution. Also say what the optimal solution is (and its value) and 
 what the algorithm finds instead.
 
-In general, a case where $h_{i+2} + e_{i} > h_{i+1} + e_{i+2}$ and $h_{i+1} > e_{i} + e_{i+1}$ causes the algorithm to fail. 
-In this case, the algorithm would say to do not do any assignments in week $i$, and then do the hard assignment in week $i+1$. 
+In general, a case where $h_{i+2} + e_{i} > h_{i+1} + e_{i+2}$ and $h_{i+1} > e_{i} + e_{i+1}$ causes the algorithm to fail to return the optimal solution. 
+The algorithm would say to do not do any assignments in week $i$, and then do the hard assignment in week $i+1$. 
 However, this is not the optimal solution, as this stops the user from getting the points that 
 could be achieved by $h_{i+2}$ and $e_{i}$. 
 
@@ -182,7 +182,68 @@ the hard assignment in Week $3$. Thus, they would do the easy assignment and get
 \item (35 points) Give an algorithm with $O(n)$ worst case running time which takes as input the values $e_1, \dots, e_n$ and $h_1, \dots, h_n$ and 
 returns the value of the optimal schedule. Prove its correctness and running time.
 
-TODO
+\bigbreak
+
+Algorithm Description:
+
+Let $OPT(i)$ denote the maximum number of points a student can earn in the first $i$ weeks. The pseudocode for the algorithm is as follows: 
+
+\begin{lstlisting}[mathescape]
+OPT($0$) = $0$;
+OPT($1$) = $e_{1}$;
+
+for $i$ = $2$ to $n$:
+    OPT($i$) = max((OPT($i-1$) + $e_i$), (OPT($i-2$) + $h_i$))
+\end{lstlisting}
+
+This algorithm iterates through the weeks and determines the optimal solution based on the already determined optimal solutions for previous weeks, 
+since $OPT(i)$ cannot be determined until $OPT(0)$ through $OPT(i-1)$ have been calculated. For all $i$, we save $OPT(i)$ in an array for easy access,  
+for easy access, so $OPT(0)$ pulls the optimal solution for $0$ weeks located in the $0$th position of the array, and so on.
+
+\bigbreak
+
+Correctness Proof:
+
+We prove correctness by strong induction.
+
+Base case. We first consider $n = 0$. Since there are no weeks of assignments, the maximum number of points earned is $0$. 
+We now consider when $n = 1$. In this case, the algorithm has $1$ option, $e_{1}$, since the hard assignment cannot be completed in Week $1$
+and so the optimal solution is the value of $e_{1}$. Therefore, this algorithm returns correctly.
+
+Inductive case. We assume that this algorithm correctly computs the optimal value $OPT(j)$ for all Weeks $j < i$. 
+We prove that the next iteration of the loop will then find the optimal solution for Week $i$. 
+
+For the $i$th week, there are two cases:
+
+\begin{enumerate}[label=(\arabic*), noitemsep]
+\item $OPT(i-1) + e_i \geq OPT(i-2) + h_i$. In this case, the optimal solution is to do the easy assignment in Week $i$.
+\item $OPT(i-1) + e_i < OPT(i-2) + h_i$. In this case, the optimal solution is to skip Week $i-1$ and do the hard assignment in Week $i$.
+\end{enumerate}
+
+Since all assignments are positive, the optimal solution for Week $i$ involves completing either the easy or the hard assignment in Week $i$, 
+since skipping Week $i$ will always return a lesser solution than doing $e_i$, so skipping Week $i$ is never the optimal solution. 
+Therefore, the $2$ options above represent the only possible optional solutions for Week $i$. 
+This means our choices for the optimal solution are relegated to these two options.
+
+
+If $e_i$ is completed in Week $i$, the maximum possible score is $OPT(i-1) + e_{i}$, since there are no restrictions on 
+what can be completed in the first $i-1$ weeks. By the inductive hypothesis, $OPT(i-1)$ returns the optimal solution for those weeks. 
+Suppose, instead, we choose $h_{i}$. There is a restriction on the hard assignment, since this means no assignment can be completed in Week $i-1$. 
+Therefore, the maximum possible solution is $OPT(i-2) + h_{i}$. By the inductive hypothesis, $OPT(i-2)$ returns the optimal solution for 
+Weeks $1$ to $i-2$. Since these $2$ cases represent the possibilities for the optimal solution, taking their maximum would therefore 
+give the optimal solution for the first $i$ weeks. Therefore, the algorithm correctly finds $OPT(i)$.
+
+In proving the base cases and the inductive case for this algorithm, we have proven that it will correctly return the optimal solution for any $n$.
+
+\bigbreak
+
+Runtime Proof:
+
+We analyze the algorithm above. Assigning $OPT(0)$ and $OPT(1)$ takes $2$ constant-time assignments, amounting to $O(1)$. 
+Then, the loop executes at most $n-1$ times. Within the loop, There are $2$ array accesses by index to $OPT(i-1)$ and $OPT(i-2)$, 
+$2$ arithmetic computations, $1$ relational operation, and $1$ assignment operation. These are all constant-time operations. 
+Therefore, each loop takes $O(1)$ time. Since the loop repeats $n-1$ times, the overall time complexity of the algorithm 
+is $O(n-1)$, or $O(n)$.
 
 \end{enumerate}
 
@@ -208,6 +269,27 @@ devise an algorithm that runs in $O(n)$ time and computes the profit of an optim
 As always, prove correctness and running time.  
 
 \bigbreak
+
+Algorithm Description:
+
+We maintain two optimal values -- $B(i)$ and $W(i)$. Let $B(i)$ denote the maximum profit achievable on days $1$ to $i$, 
+if we serve in Baltimore on day $i$. Let $W(i)$ denote the maximum profit achievable on days $1$ to $i$, if we serve in Washington on day $i$. 
+
+The pseudocode for the algorithm goes as follows:
+
+
+
+TODO
+
+\bigbreak
+
+Correctness Proof:
+
+TODO
+
+\bigbreak
+
+Runtime Proof:
 
 TODO
 
