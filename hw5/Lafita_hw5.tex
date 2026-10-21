@@ -210,7 +210,7 @@ Base case. We first consider $n = 0$. Since there are no weeks of assignments, t
 We now consider when $n = 1$. In this case, the algorithm has $1$ option, $e_{1}$, since the hard assignment cannot be completed in Week $1$
 and so the optimal solution is the value of $e_{1}$. Therefore, this algorithm returns correctly.
 
-Inductive case. We assume that this algorithm correctly computs the optimal value $OPT(j)$ for all Weeks $j < i$. 
+Inductive case. We assume that this algorithm correctly computes the optimal value $OPT(j)$ for all Weeks $j < i$. 
 We prove that the next iteration of the loop will then find the optimal solution for Week $i$. 
 
 For the $i$th week, there are two cases:
@@ -277,13 +277,31 @@ if we serve in Baltimore on day $i$. Let $W(i)$ denote the maximum profit achiev
 
 The pseudocode for the algorithm goes as follows:
 
+\begin{lstlisting}[mathescape]
+W($1$) = $W_1$ - $M$;
+B($1$) = $B_1$;
+OPT($1$) = max(W($1$), B($1$));
 
+for $i$ = $2$ to $n$:
+    B($i$) = max((B($i-1$) + B_{i}), (W($i-1$) - M + B_{i}))
+    W($i$) = max((W($i-1$) + W_{i}), (B($i-1$) - M + W_{i}))
+    OPT($i$) = max(B($i$), W($i$))
+\end{lstlisting}
 
-TODO
+Much like in the last problem, this algorithm maintains arrays $W$, $B$, and $OPT$, which allows for $O(1)$ access to each of the past calculations. 
 
 \bigbreak
 
 Correctness Proof:
+
+We use a proof by strong induction.
+
+Base case. We consider the case where $n=1$. Since we wake up in Baltimore, we have $2$ options per the problem specs. 
+We can either sell in Baltimore, or pay the gas cost and sell in Washington. Thus, the possible optimal solutions are $B_1$ and $W_1 - M$. 
+Therefore, the optimal solution is the maximum of these two, which is what the code determines for the optimal solution $OPT(1)$. 
+
+Inductive case. We assume that this algorithm correctly computes the optimal value $OPT(j)$ for all days $j < i$. 
+We prove that the next iteration of the loop will then find the optimal solution for day $i$.
 
 TODO
 
@@ -291,6 +309,10 @@ TODO
 
 Runtime Proof:
 
-TODO
+We analyze the algorithm above. Assigning $B(1)$, $W(1)$, and $OPT(1)$ takes $3$ constant-time assignments, amounting to $O(1)$. 
+Then, the loop executes at most $n-1$ times. Within the loop, for each $i$, There are $4$ array accesses to $B(i-1)$ and $W(i-1)$ (twice each), 
+$4$ arithmetic computations, $3$ relational operations, and $3$ assignment operations. These are all constant-time operations. 
+Therefore, each loop takes $O(1)$ time. Since the loop repeats $n-1$ times, the overall time complexity of the algorithm 
+is $O(n-1)$, or $O(n)$.
 
 \end{document}
