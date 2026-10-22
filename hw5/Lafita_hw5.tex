@@ -240,8 +240,8 @@ In proving the base cases and the inductive case for this algorithm, we have pro
 Runtime Proof:
 
 We analyze the algorithm above. Assigning $OPT(0)$ and $OPT(1)$ takes $2$ constant-time assignments, amounting to $O(1)$. 
-Then, the loop executes at most $n-1$ times. Within the loop, There are $2$ array accesses by index to $OPT(i-1)$ and $OPT(i-2)$, 
-$2$ arithmetic computations, $1$ relational operation, and $1$ assignment operation. These are all constant-time operations. 
+Then, the loop executes at most $n-1$ times. Within the loop, There are a series of  array accesses by index, 
+arithmetic computations, relational operations, and $1$ assignment operation. These are all constant-time operations. 
 Therefore, each loop takes $O(1)$ time. Since the loop repeats $n-1$ times, the overall time complexity of the algorithm 
 is $O(n-1)$, or $O(n)$.
 
@@ -272,8 +272,9 @@ As always, prove correctness and running time.
 
 Algorithm Description:
 
-We maintain two optimal values -- $B(i)$ and $W(i)$. Let $B(i)$ denote the maximum profit achievable on days $1$ to $i$, 
+We maintain three optimal values -- $B(i)$ and $W(i)$. Let $B(i)$ denote the maximum profit achievable on days $1$ to $i$, 
 if we serve in Baltimore on day $i$. Let $W(i)$ denote the maximum profit achievable on days $1$ to $i$, if we serve in Washington on day $i$. 
+Let $OPT(i)$ denote the overall maximum achievable profit for days $1$ to $i$.
 
 The pseudocode for the algorithm goes as follows:
 
@@ -283,35 +284,66 @@ B($1$) = $B_1$;
 OPT($1$) = max(W($1$), B($1$));
 
 for $i$ = $2$ to $n$:
-    B($i$) = max((B($i-1$) + B_{i}), (W($i-1$) - M + B_{i}))
-    W($i$) = max((W($i-1$) + W_{i}), (B($i-1$) - M + W_{i}))
+    B($i$) = max((B($i-1$) + B_{$i$}), (W($i-1$) - M + B_{$i$}))
+    W($i$) = max((W($i-1$) + W_{$i$}), (B($i-1$) - M + W_{$i$}))
     OPT($i$) = max(B($i$), W($i$))
 \end{lstlisting}
 
+This algorithm finds the optimal value for each given location on a given day based on the past optimal values found, 
+and calculates the maximum of these to determine the next location and correctly compute the optimal value for $n$ days. 
 Much like in the last problem, this algorithm maintains arrays $W$, $B$, and $OPT$, which allows for $O(1)$ access to each of the past calculations. 
 
 \bigbreak
 
 Correctness Proof:
 
-We use a proof by strong induction.
+We use a proof by induction.
 
-Base case. We consider the case where $n=1$. Since we wake up in Baltimore, we have $2$ options per the problem specs. 
-We can either sell in Baltimore, or pay the gas cost and sell in Washington. Thus, the possible optimal solutions are $B_1$ and $W_1 - M$. 
-Therefore, the optimal solution is the maximum of these two, which is what the code determines for the optimal solution $OPT(1)$. 
+Base case. We consider the case where $n=1$. Since we wake up in Baltimore, we have $2$ options. 
+We can sell in Baltimore, which means the optimal value of selling in Baltimore $B(1)$ is $B_1$, since we do not have to drive. 
+We can also pay $M$ to drive to Washington and make $W_1$, making the optimal value of selling in Washington $W(1)$ equal to $W_1 - M$. 
+These are the only options for the respective cities, so $B(1)$ and $W(1)$ correctly represent the maximum profit constrained by their respective 
+ending location. These two values also represent the only possible values for the amount made, so they're the two possible optimal values. 
+Therefore, finding their maximum yields $OPT(1)$, the optimal solution on day $1$. Thus, the base case holds.
 
-Inductive case. We assume that this algorithm correctly computes the optimal value $OPT(j)$ for all days $j < i$. 
-We prove that the next iteration of the loop will then find the optimal solution for day $i$.
+Inductive case. 
 
-TODO
+We assume that, for day $i-1$, $B(i-1)$ and $W(i-1)$ correctly represent the maximum profit achievable through day $i-1$, 
+subject to ending in Baltimore and Washington, respectively, and that $OPT(i-1)$ correctly represents the overall maximum profit through day $i-1$. 
+We prove that the next iteration of the loop will then find the optimal solution for day $i$. 
+
+We must consider the possible maximum profit of selling in each city. For each city, there are two cases: 
+we are in that city or we have to drive to that city in the morning. This means, for any day $i$, there are two possible optimal values for selling 
+in that city. Either we were in the city on day $i-1$ and we sell again there on day $i$, or we were in the other city on day $i-1$, 
+and we pay $M$ to drive to the city on day $i$ and sell there on day $i$. 
+
+Because the profit earned on day $i$ and the moving cost depend only on the location on days $i-1$ and $i$, 
+the optimal schedule for each case can be obtained by extending the corresponding optimal schedule from day $i-1$, with no further
+details of the previous schedule needed. By the inductive hypothesis, we know that $B(i-1)$ and $W(i-1)$ are correct. 
+
+Any schedule ending in Baltimore on day $i$ must either end in Baltimore on day $i-1$ or end in Washington on day $i-1$. 
+By the inductive hypothesis, the maximum profits for these two cases, including the profit earned on day $i$ and any moving cost, 
+are $B(i-1) + B_i$ and $W(i-1) - M + B_i$, respectively. Thus, finding their maximum yields the optimal solution given we've 
+made the decision to sell in Baltimore that day, meaning $B(i)$ correctly represents the maximum profit after ending in Baltimore on day $i$. 
+The same logic applies to selling in Washington, and the logic is structured symmetrically in the algorithm, meaning the calculation for $W(i)$ also 
+correctly represents the maximum profit after ending in Washington on day $i$. 
+
+These represent the $2$ possible decisions we can make, since on day $i$, we can either be in Baltimore or Washington. 
+
+Every schedule must end in either Baltimore or Washington on day $i$, so $B(i)$ and $W(i)$ represent the maximum possible profit earned from the 
+$2$ possible ending locations on day $i$, from days $1$ to $i$. Therefore, taking their maximum yields the overall maximum profit for days $1$ to $i$. 
+Thus, $OPT(i)$ is correctly computed by the algorithm, meaning the algorithm has found the correct maximum profit.
+
+Since the base case and the inductive case for this problem hold, we know that the algorithm holds for all possible $n$, 
+and have proven algorithmic correctness.
 
 \bigbreak
 
 Runtime Proof:
 
 We analyze the algorithm above. Assigning $B(1)$, $W(1)$, and $OPT(1)$ takes $3$ constant-time assignments, amounting to $O(1)$. 
-Then, the loop executes at most $n-1$ times. Within the loop, for each $i$, There are $4$ array accesses to $B(i-1)$ and $W(i-1)$ (twice each), 
-$4$ arithmetic computations, $3$ relational operations, and $3$ assignment operations. These are all constant-time operations. 
+Then, the loop executes at most $n-1$ times. Within the loop, for each $i$, There are a series of array accesses by index, 
+arithmetic computations, relational operations, and assignment operations. These are all constant-time operations. 
 Therefore, each loop takes $O(1)$ time. Since the loop repeats $n-1$ times, the overall time complexity of the algorithm 
 is $O(n-1)$, or $O(n)$.
 
