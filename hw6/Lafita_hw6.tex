@@ -232,16 +232,16 @@ We use an unweighted directed graph-based algorithm. For each person $P_i$ in th
 $B_i$ (their birth) and $D_i$ (their death). This yields $2n$ vertices. We use directed edges to represent the chronology, 
 so $B_i$ has an edge directed towards $D_i$ to represent the birth occurring before the death. 
 
-We construct a graph based on the given $m$ facts. We initialize $2n$ adjacency lists to represent each known fact. 
+We construct a graph based on the given $m$ facts. We initialize $2n$ adjacency lists to represent each known fact, 
+along with inserting each edge $B_i \rightarrow D_i$ for each $i$, which is another $n$ operations. 
 Then, we iterate through the $m$ facts. We will create the edges as follows for each fact:
 
 \begin{enumerate}[label=(\arabic*), noitemsep]
-\item For some $i$ and $j$, person $P_i$ died before person $P_j$ was born: $D_i$ has an edge directed towards $B_j$.
-\item For some $i$ and $j$, the lifetimes of $P_i$ and $P_j$ overlapped: $B_i$ has an edge directed towards $D_j$ and 
-$B_j$ has an edge directed towards $B_i$.
+\item For some $i$ and $j$, person $P_i$ died before person $P_j$ was born: $D_i \rightarrow B_j$.
+\item For some $i$ and $j$, the lifetimes of $P_i$ and $P_j$ overlapped: $B_i \rightarrow D_j$ and $B_j \rightarrow D_i$.
 \end{enumerate}
 
-This construction process takes $O(2n + m)$, or $O(n + m)$ time. 
+This construction process takes $O(3n + m)$, or $O(n + m)$ time. 
 
 From here, we must detect directed cycles within the graph, since they show events that should take place after one another, which do not. 
 We can do so using DFS with current path tracking. In this case, we keep track of $2$ arrays along the DFS: 
@@ -255,12 +255,44 @@ If we complete the traversal with no cycle detection, the algorithm returns \tex
 
 Correctness Proof:
 
-TODO
+To prove correctness, we first prove that detecting cycles will detect any and all inconsistencies. Next, we will prove that this algorithm detects 
+all cycles in a given record. 
+
+In this graph, every edge reflects a strict chronological relationship. This means an edge from arbitrary $V_i$ and $V_j$ implies that event $V_i$ 
+took place strictly before $V_j$. Thus, let us imagine there are arbitrary vertices $V_x$, $V_y$, and $V_z$. If there are edges from $V_x$ and $V_y$, 
+and $V_y$ and $V_z$, this means that $V_x$ took place strictly before $V_z$. Thus, if a cycle forms, among these $3$ vertices, 
+this means there exists an edge from $V_z$ to $V_x$, which is impossible within the internal logic of the graph. Therefore, we can see that 
+a cycle is indicative of an inconsistency in the logic. We can generalize this argument to any arbitrary directed cycle, as that indicates that 
+some event took place after an event is has already been established to take place before. 
+
+When there are no cycles, this makes the graph a directed acyclic graph by design. Thus, there exists some topological ordering of the vertices 
+such that for every arbitrary directed edge $V_i \rightarrow V_j$, $V_i$ appears before $V_j$. Since we have included an edge representing every fact 
+in the dataset, in establishing a topological ordering, we know that all of the original facts must be satisfied. Thus, in establishing there are 
+no cycles, we would prove the data is logically consistent.
+
+Finally, we consider \textbf{Theorem 14.2.1} in the lecture notes: A directed graph G is a DAG if and only if DFS(G) has no back edges. 
+In our algorithm, the $path[]$ array tracks back edges. Therefore, in our algorithm finding if back edges exist via DFS, 
+we prove that the graph constructed is a directed acyclic graph, and therefore, it is logically consistent.
 
 \bigbreak
 
 Runtime Proof:
 
-TODO
+There are 2 main steps to this algorithm, the creation of the graph and running DFS.
+
+In initializing the graph as an adjacency list, we will first iterate through the $2n$ nodes, and we will create an array for each node to track edges. 
+From here, for each of the $n$ people $P_i$, we will insert edge $B_i \rightarrow D_i$. We can see that this is another $n$ operations. 
+From here, we will iterate through each of the $m$ facts and insert $1$ to $2$ edges per fact. Therefore, we insert at most $2m$ edges in this step. 
+Therefore, the worst case runtime for graph creation is $O(2n) + O(n + 2m)$, or $O(3n + 2m)$. Simplifying, this yields $O(n + m)$. 
+
+After this, we will run DFS on the resulting graph. By the lecture notes, we know that we spend $\Theta(V)$ time initializing the DFS-tracking arrays 
+$visited[]$ and $path[]$, where $V$ is the number of vertices. There are $2n$ vertices, so this takes $\Theta(n)$ time. 
+From here, since we visit each vertex only once, we only scan each adjacency list once. Thus, we spend $O(E)$ time, were $E$ is the number of edges. 
+As per the initialization, we know there are $O(n + m)$ edges, so this step takes $O(n + m)$ time. Thus, this part of the algorithm takes 
+$O(n ) + O(n + m)$ time, or $O(n + m)$.
+
+Since the graph creation and DFS run in sequence, the total runtime is the sum of their respective runtimes, so this algorithm runs in 
+$O(n + m) + O(n + m)$ time, or $O(n + m)$ time.
+
 
 \end{document}
