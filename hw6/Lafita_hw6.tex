@@ -113,7 +113,9 @@
 {{\bf Homework \#6}} \hfill {{\bf Due:} October 29, 2026, 11:59pm} \\
 \rule[0.1in]{\textwidth}{0.4pt}
 
-Remember: you may work in groups, but must write up your solution entirely on your own.  Solutions must by typeset (\LaTeX\ preferred but not required).  Collaboration is limited to discussing the problems -- you may not look at, compare, reuse, etc.~any text from anyone else in the class.  You may use the internet to look up formulas, definitions, etc., but may not simply look up the answers online.  
+Remember: you may work in groups, but must write up your solution entirely on your own.  Solutions must by typeset (\LaTeX\ preferred but not required). 
+Collaboration is limited to discussing the problems -- you may not look at, compare, reuse, etc.~any text from anyone else in the class. 
+You may use the internet to look up formulas, definitions, etc., but may not simply look up the answers online.  
 
 Please include proofs with all of your answers, unless stated otherwise.
 
@@ -169,7 +171,28 @@ As always, prove correctness and running time.
 
 Algorithm Description:
 
-TODO
+I use a weighted graph-based approach to solve this problem. We will use an undirected graph where the edges represent an interaction between $2$ 
+computers, and the edge weight will represent the timestamp. We represent this graph using an adjacency list, where each vertex is 
+mapped to those it's adjacent to with a tuple of the vertex and the time. The creation of the graph will clearly take $O(n + m)$ time, 
+since it will first initialize each list for the $n$ computers (representing the vertices), and then iterate through the $m$ tuples 
+and add each interaction to the graph representation.
+
+From here, we must determine the shortest path -- that is, the fastest time it will take for $C_b$ to be infected given $C_a$ as the injection point. 
+To do so, we will use a modifed version of Dijkstra's algorithm. Just like regular Dijksta, we maintain an array $d[n]$, representing the shortest 
+distance from the source vertex, $C_a$. Initially, all values in the array are set to $\infty$. 
+We maintain a minimum priority queue, initially containing $C_a$ with priority $0$. 
+
+Normally, in Dijksta, during the relaxation, the weights are added together to form the complete path. For vertex $v$ communicating with vertex $u$, 
+the shortest distance would be $d[v] = \min(d[v], d[u] + w(u, v))$. However, since the weight is the raw timestamp of communication, we can modify this: 
+$d[v] = \min(d[v], \max(d[u], w(u, v)))$. This represents an infected computer $u$ spreading the infection to computer $v$ at a time after 
+$u$ has become infected. 
+
+The actual process of this algorithm would go as follows: Let $v$ represent the vertex with the smallest tentative extraction time (root of the queue). 
+First, $v$ is extracted from the priority queue. Then, the algorithm examines each of its adjacent vertices, 
+calculating the candidate infection time using the formula described above. If the candidate yields a smaller infection time, we update $d[v]$ 
+and update the priority of $v$ in the queue. This repeats until either the queue is empty or $C_b$ is extracted. 
+If $C_b$ is extracted, we return $d[b]$, since its infection time has been finalized. Otherwise, we return $\infty$, 
+since no valid infection path exists from $C_a$ to $C_b$.
 
 \bigbreak
 
@@ -205,7 +228,28 @@ and if no such dates are possible then your algorithm will return no).
 
 Algorithm Description:
 
-TODO
+We use an unweighted directed graph-based algorithm. For each person $P_i$ in the record, we create $2$ vertices in the graph -- 
+$B_i$ (their birth) and $D_i$ (their death). This yields $2n$ vertices. We use directed edges to represent the chronology, 
+so $B_i$ has an edge directed towards $D_i$ to represent the birth occurring before the death. 
+
+We construct a graph based on the given $m$ facts. We initialize $2n$ adjacency lists to represent each known fact. 
+Then, we iterate through the $m$ facts. We will create the edges as follows for each fact:
+
+\begin{enumerate}[label=(\arabic*), noitemsep]
+\item For some $i$ and $j$, person $P_i$ died before person $P_j$ was born: $D_i$ has an edge directed towards $B_j$.
+\item For some $i$ and $j$, the lifetimes of $P_i$ and $P_j$ overlapped: $B_i$ has an edge directed towards $D_j$ and 
+$B_j$ has an edge directed towards $B_i$.
+\end{enumerate}
+
+This construction process takes $O(2n + m)$, or $O(n + m)$ time. 
+
+From here, we must detect directed cycles within the graph, since they show events that should take place after one another, which do not. 
+We can do so using DFS with current path tracking. In this case, we keep track of $2$ arrays along the DFS: 
+$visited[]$ and $path[]$. In this algorithm, for each unvisited vertex, we initialize a DFS traversal. 
+Each vertex we visit will be marked \textbf{true} in both arrays. We then recurse through all neighbors. 
+If we encounter a node already marked \textbf{true} in $path[]$, a cycle is detected and the algorithm returns \textbf{no}. 
+After exploring all of the neighbors of any vertex $v$, we backtrack and reset $path[v]$ to \textbf{false}. 
+If we complete the traversal with no cycle detection, the algorithm returns \textbf{yes}.
 
 \bigbreak
 
