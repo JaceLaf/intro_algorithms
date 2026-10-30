@@ -184,8 +184,8 @@ We maintain a minimum priority queue, initially containing $C_a$ with priority $
 
 Normally, in Dijksta, during the relaxation, the weights are added together to form the complete path. For vertex $v$ communicating with vertex $u$, 
 the shortest distance would be $d[v] = \min(d[v], d[u] + w(u, v))$. However, since the weight is the raw timestamp of communication, we can modify this: 
-$d[v] = \min(d[v], \max(d[u], w(u, v)))$. This represents an infected computer $u$ spreading the infection to computer $v$ at a time after 
-$u$ has become infected. 
+if $w(u, v) > d[u]$, then $d[v] = \min(d[v], \max(d[u], w(u, v)))$. This represents an infected computer $u$ spreading the infection to 
+computer $v$ at a time after $u$ has become infected. 
 
 The actual process of this algorithm would go as follows: Let $v$ represent the vertex with the smallest tentative extraction time (root of the queue). 
 First, $v$ is extracted from the priority queue. Then, the algorithm examines each of its adjacent vertices, 
@@ -198,7 +198,48 @@ since no valid infection path exists from $C_a$ to $C_b$.
 
 Correctness Proof:
 
-TODO
+This algorithm finds the first time at which $C_b$ may have become infected. In order for an infection to occur along any path from $C_a$ to $C_b$, 
+we need the time stamps along that path to be nondecreasing. If this property holds, then the infection point of $C_b$ is the timestamp on its 
+communication with the last computer in the path. We are looking for the first possible infection point, so for all paths in the graph from $C_a$ to 
+$C_b$, we are looking for the path whose largest edge weight (representing the time at which $C_b$ is infected) is as small as possible, 
+with the constraint that the path weights are nondecreasing. 
+
+We will now prove that the modified version of Dijkstra's algorithm described above correctly finds this timestamp. 
+Let $t(v)$ represent the earliest possible infection time of vertex $v$. We want to prove that when a vertex $u$ is extracted from the priority queue, 
+$d[u] = t(u)$.
+
+We first establish that every finite tentative distance assigned by our algorithm represents a valid infection sequence. 
+Initially, $d[a] = 0$, which is valid because $C_a$ is infected at time 0. When we relax an arbitrary edge $u \leftrightarrow v$ with weight $w(u, v)$, 
+we first check that $w(u, v) \geq d[u]$. This ensures that the communication occurs at or after the time at which $u$ becomes infected. 
+Therefore, if $d[u]$ represents a valid infection time, assigning $d[v] = w(u, v)$ also represents a valid infection time. 
+Thus, every finite tentative distance represents a valid infection sequence, and thus $d[v] \geq t(v)$.
+
+We now prove by induction on the order in which vertices are extracted from the priority queue that $d[u] = t(u)$ for every extracted vertex $u$.
+
+Base case. The first vertex extracted is $C_a$, since $d[a] = 0$ and all other vertices have an initial distance of $\infty$. 
+Since $C_a$ is infected at time 0, we know that $d[a] = t(a) = 0$.
+
+Inductive step. Assume that for every vertex $x$ extracted before the current iteration, $d[x] = t(x)$. 
+Let $u$ be the next vertex extracted from the priority queue. We want to show that $d[u] = t(u)$. 
+We already established that every finite tentative distance represents a valid infection sequence, so $d[u] \geq t(u)$. 
+We therefore only need to show that $d[u] \leq t(u)$. 
+
+We assume FTSOC that $d[u] > t(u)$. We consider a valid infection sequence from $C_a$ to $u$ that infects $u$ at time $t(u)$. 
+Let $j$ be the first vertex along this sequence that has not yet been extracted, and let $i$ be the vertex immediately preceding $j$.
+
+By the inductive hypothesis, $d[i] = t(i)$. Since the infection sequence is valid, the communication between $i$ and $j$ occurs at a time $s$ 
+such that $s \geq t(i) = d[i]$. Therefore, when $i$ was extracted, the algorithm considered the edge $i \leftrightarrow j$ 
+and assigned $j$ a tentative distance $\leq s$.
+
+Because the timestamps along the infection sequence are nondecreasing, $t \leq t(u)$. Thus, we have $d[j] \leq s \leq t(u) < d[u]$.
+However, this is a contradiction because the algorithm extracted $u$ before $j$, even though $j$ had a smaller tentative distance. 
+The priority queue  extracts the vertex with the smallest tentative distance. Therefore, the assumption must be false, and $d[u] = t(u)$.
+
+By induction, every vertex extracted from the priority queue has its earliest possible infection time assigned to its distance. 
+Thus, when $C_b$ is extracted, $d[b]$ is the earliest possible time at which $C_b$ becomes infected. 
+If $C_b$ is never extracted, no valid infection sequence exists from $C_a$ to $C_b$, and the algorithm correctly returns $\infty$.
+
+Therefore, we have proven the algorithm's correctness.
 
 \bigbreak
 
