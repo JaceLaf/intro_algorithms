@@ -245,7 +245,16 @@ Therefore, we have proven the algorithm's correctness.
 
 Runtime Proof:
 
-TODO
+There are $2$ steps to this algorithm. The first is graph creation. Each of the $n$ adjacency lists needs to be initialized, 
+which takes $O(1)$ time each, meaning $O(n)$ for adjacency list initialization. Then, each of the $m$ tuples must be inserted into as edges 
+into the graph. This means that graph creation takes $O(n + m)$ time. 
+
+Now, we move on to the modified Dijkstra's algorithm. This follows the same process as normal Dijkstra's algorithm. 
+The modified relaxation does not change the asymptotic number or cost of operations. Therefore, it has the same time complexity. 
+As per the proof in Lecture Notes 15.4.1, we know that if we strucutre this with a 
+Fibonacci heap, the time complexity of this algorithm is $O(m + n \log n)$. This amortized guarantee is enough. 
+
+Therefore, combining both steps, the total time complexity is $O(n + m) + O(m + n \log n)$, or $O(m + n \log n)$. 
 
 \section{Consistent Lifetimes (50 points)}
 
