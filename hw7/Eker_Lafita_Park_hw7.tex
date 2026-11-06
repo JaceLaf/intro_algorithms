@@ -145,9 +145,9 @@ We want to find a large enough $i$, for which OPT$(u, i)$ finds the shortest pat
 
 \textbf{Recurrence.} 
 
-$$\text{OPT}(u, i) = \begin{cases} 0 & \text{if } k = 0, u = v 
-                    \\ \infty & \text{if } k = 0, u \neq v 
-                    \\ \min (\text{OPT}(u, i-1), \underset{w: w, u \in E} {\min} (\text{OPT}(w, i-1) + \ell(w, u))) & \text{otherwise.} \end{cases}$$
+$$\text{OPT}(u, i) = \begin{cases} 0 & \text{if } i = 0, u = v 
+                    \\ \infty & \text{if } i = 0, u \neq v 
+                    \\ \min (\text{OPT}(u, i-1), \underset{x: x, u \in E} {\min} (\text{OPT}(x, i-1) + \ell(x, u))) & \text{otherwise.} \end{cases}$$
 
 \textbf{Pseudocode.} 
 We use the Bellman-Ford algorithm, except instead of running the outer loop $n-1$ times, we implement a tracker of changes to the distance array, 
@@ -160,8 +160,8 @@ The outer loop runs at most $\alpha + 1$ times as per the termination constraint
     \State $i \leftarrow 0$;
     \Repeat;
         \State i $\leftarrow$ i + 1;
-        \For $u \in V$ \do
-            M$(u, i) \leftarrow \min (\text{M}(u, i-1), \underset{w: w, u \in E} {\min} (\text{OPT}(w, i-1) + \ell(w, u)))$;
+        \For {$u \in V$} \do
+            M$(u, i) \leftarrow \min (\text{M}(u, i-1), \underset{x: x, u \in E} {\min} (\text{OPT}(x, i-1) + \ell(x, u)))$;
         \EndFor
     \Until M(u, i) = M(u, i-1) \textbf{for} all $u \in V$;
     \Return M(., i);
@@ -265,37 +265,68 @@ for all $(u, v) \in E$, and let $d'$ denote the shortest path distance with resp
 
 \textbf{Super source for each group.} 
 From here, we can run multi source Dijkstra, but we only need to find the distance between two subsets, not the distance between every node. 
-Therefore, we run Dijkstra's once from each subset instead. 
+Therefore, we run Dijkstra's once from each subset instead.
 
 We create a source vertex $s_i$ for each set $V_i$ and we set its distance from each vertex in $V_i$ to $C_i - h(u)$, 
-where $C_i$ is the maximum potential in $V_i$, and $h(u)$ is the potential of any vertex $u$ in $V_i$. 
+where $C_i$ is the maximum potential in $V_i$ ($C_i = \underset{u \in V}{\max}(h(u)$)), and $h(u)$ is the potential of any vertex $u$ in $V_i$. 
 This cancells out the reweighting of Johnson's algorithm, and introduces $C_i$ as a means of normalization to keep 
 all distances nonnegative. 
 
 \textbf{Finding distance between groups.} 
-For each $i, j \in [k]$, return $\delta(i, j) = \underset{y \in V_j}{min\{D_i(y) + h(y)\}}$ .
+For each $i, j \in [k]$, return $\delta(i, j) = \underset{y \in V_j}{\min}\{D_i(y) + h(y)\}$ .
 
 \bigbreak
 
 \textbf{Correctness Proof:}
 
-$q$ has no incoming edges, so $G'$ has no negative-weight cycle and $h$ is well defined. By the triangle inequality, $h(v) \leq h(u) + w(u, v)$, 
-so $w' \geq 0$. For any path $p$ from $x$ to $y$, the sum telescopes to $w'(p) = w(p) + h(x) - h(y)$, so $d'(x, y) = d(x, y) + h(x) - h(y)$
+First, we establish that the Johnson reweighting produces nonnegative edge weights. Since $q$ has no incoming edges, 
+and the original graph has no negative-weight cycles, the augmented graph $G'$ has no negative-weight cycles. 
+Furthermore, since $q$ has a zero-weight edge to every vertex, every vertex is reachable from $q$, so $h(v) = d(q,v)$ is well-defined.
 
-Thus, for each set $V_i$, we want the algorithm to return:
+By the triangle inequality, for every edge $(u, v)$, we have $h(v) \leq h(u) + w(u,v)$. Therefore, $w'(u,v) = w(u,v) + h(u) - h(v) \geq 0$.
 
-$D_i(v) = \min_{u \in V_i} (d'(u, v)) = \min_{u \in V_i} (d(u, v) + h(u) - h(v))$
+For any path $p$ from $x$ to $y$, the reweighted edge costs telescope, giving $w'(p) = w(p) + h(x) - h(y)$. 
+Since this adds the same quantity to every path between $x$ and $y$, the shortest paths are preserved, and thus $d'(x, y) = d(x, y) + h(x) - h(y)$.
 
-Since the starting distance between the source and $u$ is $C_i - h(u)$, we must add that to this equation to correctly find the minimum:
+Now, consider an arbitrary subset $V_i$. We initialize Dijkstra's algorithm with a distance of $C_i - h(u)$ for every vertex $u \in V_i$, 
+where $C_i = \max_{u \in V_i} (h(u))$. Since $C_i \geq h(u)$, all initial distances are nonnegative. 
+Since all reweighted edge weights are also nonnegative, Dijkstra correctly calculates the shortest distances from these initial vertices.
 
-$D_i(v) = \min_{u \in V_i} (C_i - h(u) + d(u, v) + h(u) - h(v)) = \min_{u \in V_i} (C_i + d(u, v) - h(v))$
+Let $D_i(v)$ denote the resulting distance to an arbitrary vertex $v$. Since we initialize every vertex $u \in V_i$ with distance $C_i - h(u)$, we obtain:
 
-Since $C_i$ and $h(v)$ are constants in this context, we can rearrage:
+$$D_i(v) = \underset{u\in V_i}{\min}\left(C_i-h(u)+d'(u,v)\right)$$
 
-$\min_{u \in V_i} (d(u, v)) = D_i(v) - C_i + h_v$
+Substituting our earlier relationship between the original and reweighted distances:
 
-As $\delta (u, v) = \min_{u \in V_i} (d(u, v))$, we can see that this equation correctly finds the distance. 
-Therefore, the changed source weights allow for accurate calculation of any $\delta (u, v)$.
+$$
+\begin{aligned}
+D_i(v)
+&=\min_{u\in V_i}\left(C_i-h(u)+d(u,v)+h(u)-h(v)\right)\
+&=\min_{u\in V_i}\left(C_i+d(u,v)-h(v)\right)\
+&=C_i-h(v)+\min_{u\in V_i}d(u,v)
+\end{aligned}
+$$
+
+Rearranging, we obtain:
+
+$$\min_{u\in V_i}d(u,v)=D_i(v)-C_i+h(v)$$
+
+Finally, recall that the desired quantity is:
+
+$$\delta(i,j)=\min_{u\in V_i,\ v\in V_j}d(u,v)$$
+
+Therefore:
+
+$$
+\begin{aligned}
+\delta(i,j)
+&=\min_{v\in V_j}\min_{u\in V_i}d(u,v)\
+&=\min_{v\in V_j}\left(D_i(v)-C_i+h(v)\right)
+\end{aligned}
+$$
+
+This is exactly the quantity returned by our algorithm for every pair of subsets $V_i, V_j$. 
+Therefore, the algorithm correctly computes all required shortest-path distances.
 
 \bigbreak
 

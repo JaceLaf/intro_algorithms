@@ -1,7 +1,7 @@
 # Fdb version 4
-["pdflatex"] 1793940290.98515 "/home/jason-lafita/intro_algorithms/hw7/Eker_Lafita_Park_hw7.tex" "Eker_Lafita_Park_hw7.pdf" "Eker_Lafita_Park_hw7" 1793940291.81403 0
+["pdflatex"] 1793980055.90404 "/home/jason-lafita/intro_algorithms/hw7/Eker_Lafita_Park_hw7.tex" "Eker_Lafita_Park_hw7.pdf" "Eker_Lafita_Park_hw7" 1793980056.71543 0
   "/etc/texmf/web2c/texmf.cnf" 1781025547.25108 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/jason-lafita/intro_algorithms/hw7/Eker_Lafita_Park_hw7.tex" 1793940289.9872 18750 734474329f0d14951b78dfbc21390310 ""
+  "/home/jason-lafita/intro_algorithms/hw7/Eker_Lafita_Park_hw7.tex" 1793980055.62649 19915 7694ae5826343014c860170b6b09db40 ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1246382020 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
@@ -11,8 +11,6 @@
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm7.tfm" 1246382020 940 228d6584342e91276bf566bcf9716b83 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm" 1136768653 1328 c834bbb027764024c09d3d2bf908b5f0 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm" 1136768653 1324 c910af8c371558dc20f2d7822f66fe64 ""
-  "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmbx6.tfm" 1136768653 1344 8a0be4fe4d376203000810ad4dc81558 ""
-  "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmbx8.tfm" 1136768653 1332 1fde11373e221473104d6cc5993f046e ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmex10.tfm" 1136768653 992 662f679a0b3d2d53c1b94050fdaa3f50 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmmi10.tfm" 1136768653 1528 abec98dbc43e172678c11b3b9031252a ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmmi6.tfm" 1136768653 1512 f21f83efb36853c0b70002322c1ab3ad ""
@@ -202,9 +200,9 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1707919699 40399 f2c302f7d2af602abb742093540a5834 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1789503060.89473 165012 f177baa1c39a3ebd62c3096a43521a0d ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1789503090 6831105 2a71ac4d6e9f71fa7d13dd0979fbab26 ""
-  "Eker_Lafita_Park_hw7.aux" 1793940291.71308 789 615a446607dd8a2af20890dab3a6dc2d "pdflatex"
-  "Eker_Lafita_Park_hw7.out" 1793940291.71308 512 369d4ade2c889837f5dee511bef14062 "pdflatex"
-  "Eker_Lafita_Park_hw7.tex" 1793940289.9872 18750 734474329f0d14951b78dfbc21390310 ""
+  "Eker_Lafita_Park_hw7.aux" 1793980056.61581 789 7dc6dc93b868088f3742fdc0958bcc71 "pdflatex"
+  "Eker_Lafita_Park_hw7.out" 1793980056.61581 512 369d4ade2c889837f5dee511bef14062 "pdflatex"
+  "Eker_Lafita_Park_hw7.tex" 1793980055.62649 19915 7694ae5826343014c860170b6b09db40 ""
   (generated)
   "Eker_Lafita_Park_hw7.aux"
   "Eker_Lafita_Park_hw7.log"
