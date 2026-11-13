@@ -139,10 +139,12 @@ This process repeats until we have only one tree.
 We use a proof by induction via loop invariant on Boruvka's MST algorithm. 
 We consider graph $G = (V, E)$ as described in the problem.
 
-Base case. At the start, each $v \in V$ is a separate tree. Thus, there are $0$ edges in the current forest. 
+\textbf{Base case.} 
+At the start, each $v \in V$ is a separate tree. Thus, there are $0$ edges in the current forest. 
 Since there are no edges in the current forest, every edge in the forest must be in the MST, proving the base case true.
 
-Inductive step. We assume that for iterations $1$ to $i-1$ of Boruvka's, every edge added to forest $F$ is in the MST for $G$. 
+\textbf{Inductive step.} 
+We assume that for iterations $1$ to $i-1$ of Boruvka's, every edge added to forest $F$ is in the MST for $G$. 
 We prove that on iteration $i$, each edge in the new forest $F'$ is in the MST for $G$.
 
 We consider tree $T$ in $F$. Boruvka's will select the lowest-weight edge $e = (u, v)$ such that $u \in T$ and $v \notin T$, 
@@ -155,6 +157,8 @@ This process repeats for all trees in $F$. Since any cut respects the MST, any e
 Therefore, after iteration $i$ of Boruvka's, every edge in the new $F'$ is safe for $G$'s MST.
 
 In proving correctness for Boruvka's algorithm in the base and inductive case, we have proven correctness for Boruvka's algorithm as a whole.
+
+\bigbreak
 
 \item  (11 points) Show how you can run each iteration of the algorithm in $O(m)$ time with just a few runs of DFS and no fancy data structures 
 (heaps, union-find -- remember, this algorithm was from 1926!).  In other words, given a current forest $F$ of marked edges, 
@@ -179,6 +183,8 @@ Once this round is done, we add each minimum edge to forest $F$. We add $1$ edge
 Since this is a maximum of $n$ trees, we know this takes $O(n) = O(m)$ time.
 
 Summing this, we can see that each iteration of Boruvka's takes $O(m) + O(m) + O(m) + O(m) = O(m)$ time.
+
+\bigbreak
 
 \item (11 points) Prove an upper bound of $O(m \log n)$ on the running time of this algorithm.
 
@@ -216,7 +222,60 @@ and prove correctness and running time.
 
 \textbf{Hint:} Think about MSTs and Kruskal's algorithm
 
-TODO
+\bigbreak
+
+\textbf{Algorithm Description:}
+
+We begin with the same start to Kruskal's algorithm. We first sort the edges by weight ascending, 
+so that the output is a list of the edges where the first edge is the lowest-weight edge. From here, we begin building a forest $F$. 
+We use a Union-Find data structure to represent $F$. We repeatedly perform unions on $F$, adding the next lowest-weight edge, 
+until there are $k$ sets in the structure. We then return the forest $F$, representing the partition.
+
+\bigbreak
+
+\textbf{Correctness Proof:}
+
+We prove correctness by induction on $k$. 
+
+\textbf{Base case.} 
+We must first address the inherent limitation on $k$. Since we are trying to produce a partition of $G$, the maximum number of components is $n$, 
+where $n$ is the number of nodes, since that means each node is in its own component. Thus, we consider the maximum possible value of $k$ for our base case. 
+Thus, $k = n$. This means that the resulting forest after the algorithm should produce $n$ components. This means each node is its own component. 
+There is only one partition where $k = n$, so this partition is the maximum of the minimum distance between components. Thus, the base case holds.
+
+\textbf{Inductive step.} 
+We assume that this algorithm returns the correct partition for $G$ where $k = i + 1$. We will prove this holds for $k = i$. 
+When $k = i + 1$, we know that forest $F$ has $i + 1$ sets. To go from $k = i + 1$ to $k = i$, this means that $2$ sets 
+must be unioned to create $1$ set. Our algorithm will select the lowest-weight edge that does not create a cycle to add to $F$. 
+Any edge considered either would join $2$ vertices already in the same connected component, creating a cycle (and therefore not valid to add to $F$), 
+or it would join $2$ vertices in different components, which unions those $2$ sets into $1$ set. Therefore, $F$ now has $i$ components. 
+
+Let $w$ be the weight of the newest added edge $x$ to $F$. Since $w$ is the next lowest-weight edge, we know that all edges $e$ not in $F$ have weights 
+$\ell(e) \geq w$. Therefore, the minimum possible distance between any of the remaining $i$ clusters is exactly $w$. 
+
+Now, we assume FTSOC that there exists another partition $F'$ of $i$ components with a minimum distance between clusters greater than $w$. 
+Since every edge with weight at most $w$ has length at most $w$, its endpoints must belong to the same cluster in this alternative partition. 
+Otherwise, the minimum distance between two clusters would be at most $w$. Now, we consider the $i + 1$ components before adding $x$. 
+Because all edges of weight at most $w$ must have endpoints in the same alternative cluster, each of these $i + 1$ components must be 
+entirely contained within one alternative cluster. However, there are only $i$ alternate clusters.
+By the pigeonhole principle, at least two of the $i + 1$ components must belong to the same alternative cluster. 
+Thus, this is a contradiction, so it is impossible for any other partition $F'$ to have a minimum distance greater than $w$. 
+
+Therefore, the parition found by this algorithm is correct, so the inductive step holds.
+
+In proving the base and inductive case correct for all valid $k$ such trhat $1 \leq k \leq n$, we have proven the algorithm correct.
+
+\bigbreak
+
+\textbf{Runtime Proof:}
+
+As per the proof in \textbf{Theorem 17.4.1}, we know that sorting the edges in the tree takes $O(m \log m) = O(m \log n)$ time. 
+From here, we initialize the Union-Find structure, with $n$ nodes, which takes $O(n)$ time. 
+We expect this algorithm to work for all $k \leq n$. Thus, the algorithm must work for $k = 1$. Therefore, $G$ must be a connected graph, 
+since it must have at least the number of edges to connect every node, or $n - 1$ egdes. Therefore $O(n) = O(m + 1) = O(m)$. 
+Finally, we consider the maximum number of unions that can be done on the tree. If $k = 1$, then we are trying to produce $1$ connected component. 
+This is no different than running Kruskal's normally, so we know that the worst-case runtime of the unions is $O(m\alpha(m, n))$, per \textbf{Theorem 17.4.1}. 
+Summing, we get a runtime of $O(m \log n) + O(m) + O(m\alpha(m, n))$. The $O(m \log n)$ term dominates, giving a total runtime of $O(m \log n)$.
 
 \section{Matroids (34 points)}
 
