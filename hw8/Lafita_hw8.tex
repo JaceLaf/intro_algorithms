@@ -160,11 +160,49 @@ In proving correctness for Boruvka's algorithm in the base and inductive case, w
 (heaps, union-find -- remember, this algorithm was from 1926!).  In other words, given a current forest $F$ of marked edges, 
 show how to find the set of edges which consists of the shortest edge incident to each tree in $F$ in time $O(m)$.
 
-TODO
+For each iteration, we use DFS search to identify which vertices belong to which tree. We create a dictionary to keep track of, for each vertex $v$, 
+which tree $T_i$ within $G$ such that $v \in T_i$. We run DFS on $F$, keeping track of which nodes are reachable from others. 
+As per the notes in \textbf{Lecture 13}, we know that the time complexity of DFS is $O(n + m)$. 
+However, we can simplify this further. Since $G$ is a connected graph, we know that $m \geq n - 1$, 
+since the graph must contain at least enough edges to connect the $n$ vertices. Rearranging, we get $m + 1 \geq n$. 
+Thus, $O(n) = O(m + 1) = O(m)$. Inserting this into the DFS, we get that the time complexity of the DFS is $O(m)$. 
+
+From here, we initialize an array to keep track of the minimum outgoing edge from each tree $T_i$. 
+In a graph with $n$ vertices, there are at most $n$ separate trees. Thus, this step takes $O(n) = O(m)$ time, as per the proof above.
+
+Now that we know to which components each tree is in, we can now iterate through each edge in $G$. 
+For each edge $(u, v)$ in $G$, we check if $u \in T_i$ and $v \notin T_i$, and compare it against the current minimum outgoing edge weight from $T_i$. 
+If $(u, v)$ is smaller, it becomes the new minimum outgoing edge from $T_i$. 
+Since this aspect of the iteration iterates through each edge in $G$ once, we know it takes $O(m)$ time. 
+
+Once this round is done, we add each minimum edge to forest $F$. We add $1$ edge for each $T_i$. 
+Since this is a maximum of $n$ trees, we know this takes $O(n) = O(m)$ time.
+
+Summing this, we can see that each iteration of Boruvka's takes $O(m) + O(m) + O(m) + O(m) = O(m)$ time.
 
 \item (11 points) Prove an upper bound of $O(m \log n)$ on the running time of this algorithm.
 
-TODO
+The previous question showed that each iteration of takes $O(m)$ time. 
+We will prove that there will be at most $\log n$ iterations of the algorithm, yielding overall time complexity $O(m) * \log n = O(m \log n)$. 
+
+We consider an arbitrary iteration of Boruvka's, where the forest $F$ has $k$ trees $T$ in it. 
+For each tree $T_i$, we select $1$ outgoing edge from it to add to $F$. Since the edge is between $2$ trees, 
+adding it to the forest would join at least $2$ edges. This means that every resulting tree in the new $F'$ contains at least $2$ 
+of the trees in $F$. Therefore, the number of components $k'$ is $k' \leq \frac {k}{2}$. 
+
+Thus, we know that each iteration at least halves the number of trees. We begin with $n$ trees, so after $i$ rounds, there are $k \leq \frac{n}{2^{i}}$ 
+groups. Since the algorithm stops when the number of trees is $1$, we know there must be $1$ tree in $F$. 
+We can calculate the number of rounds to reach $1$ tree as: 
+
+$\frac{n}{2^{i}} = 1$
+
+$n = 2^{i}$
+
+$i = \log_2 (n)$
+
+Therefore, the number of iterations is $O(\log n)$. 
+Since the amount of work per round is $O(m)$, we know the total time complexity is $O(\log n) \cdot O(m) = O(m \log n)$.
+
 
 \end{enumerate}
 
