@@ -290,7 +290,7 @@ To prove that $(U, \mathcal I)$ is a matroid, we must prove the following proprt
     \item $\emptyset \in \mathcal I$
     \item Let $A$, $B$ be sets. If $A \in \mathcal I$ and $B \subseteq A$, then $B \in \mathcal I$
     \item Let $A$, $B$ be sets. If $A, B \in \mathcal I$ and $|A| < |B|$, then for some elements $x$ such that $x \in B \ A$, 
-    $A \union x \in \mathcal I$
+    $A \union \{x\} \in \mathcal I$
 \end{enumerate}
 
 \medbreak
@@ -328,9 +328,9 @@ $|A \cap U_i| < |B \cap U_i|$
 
 Since $B \in \mathcal I$, we know that for this specific value $i$, $B$ has no more than $r_i$ elements in it from $U_i$. 
 Therefore $A$ has strictly fewer than $r_i$ elements in it from $U_i$. We consider $x$ to be an arbitrary element in $U_i$ such that $x \in B \ A$. 
-Now, we consider set $A \union {x}$. Since $A$ has strictly fewer than $r_i$ elements in it from $U_i$, adding $1$ element from $U_i$ ($x$)
-means that the resulting set $A \union {x}$ has no more than $r_i$ elements in it from $U_i$. 
-Thus, $A \union {x} \in \mathcal I$, and this property holds.
+Now, we consider set $A \union \{x\}$. Since $A$ has strictly fewer than $r_i$ elements in it from $U_i$, adding $1$ element from $U_i$ ($x$)
+means that the resulting set $A \union \{x\}$ has no more than $r_i$ elements in it from $U_i$. 
+Thus, $A \union \{x\} \in \mathcal I$, and this property holds.
 
 \medbreak
 
@@ -344,7 +344,47 @@ and want to return the maximum-weight independent set \emph{that contains I}.  M
 and prove that your algorithm is correct. You do not need to analyze running time, but your algorithm should need only a polynomial amount of time 
 and calls to the independence oracle.
 
-TODO
+Let $W$ be the maximum weight independent set on matroid $(U, \mathcal I)$. 
+Let $W'$ be the maximum weight independent set on matroid $(U, \mathcal I)$ containing some given set $I \in \mathcal I$.
+We will modify the greedy algorithm that currently finds $W$ to now find $W'$. 
+
+In the original greedy algorithm, we do the following:
+
+\begin{enumerate}[label=\arabic*., noitemsep]
+    \item Initialize $W = \emptyset$.
+    \item Sort elements of $U$ in decreasing order of weight.
+    \item Consider each element $x$ in sorted order. If $W \union \{x\} \in \mathcal I$, add $x$ to $W$.
+    \item Return $W$.
+\end{enumerate}
+
+We consider a modification where instead of beginning with initializing $W = \emptyset$, we initialize $W' = I$. 
+Then, instead of sorting elements of $U$, we sort elements of $U / I$, since we've already added $I$ to $W'$. 
+We follow the rest of the algorithm the same way, and return $W'$.
+
+We know that the original greedy algorithm is correct as per \textbf{Theorem 18.4.1}. We prove correctness for this modification. 
+
+Let $W' = {x_1, x_2, \dots, x_k}$ be the elements added by our modified greedy algorithm, in the order they were added, and let 
+$W^* = {y_1, y_2, \dots, y_k}$ be an arbitrary maximum-weight independent set containing $I$, with its elements outside of $I$ 
+sorted in decreasing order of weight. Since all weights are positive, both $W'$ and $W^*$ are maximal independent sets. 
+By the augmentation property, all maximal independent sets in a matroid have the same size.  
+Therefore, both sets contain the same number of elements outside of $I$, so we can use the same indexing for both. 
+
+We will prove that $w(x_j) \geq w(y_j)$ for every $j$. This implies that $W'$ has weight at least that of $W^*$, and therefore is optimal. 
+Assume FTSOC that this is false, and let $j$ be the smallest index for which $w(x_j) < w(y_j)$.
+
+Let $F_1 = I \union {x_1, x_2, \dots, x_{j-1}}$ and $F_2 = I \union {y_1, y_2, \dots, y_j}$. Both $F_1$ and $F_2$ are independent sets, and $|F_2|>|F_1|$. 
+Therefore, by the augmentation property, there is some element $y_z \in F_2 \ F_1$
+such that $F_1 \union {y_z} \in \mathcal I$.
+
+Since the elements $y_1,\dots,y_j$ are sorted in decreasing order of weight, we know that $w(y_z) \geq w(y_j) > w(x_j)$. 
+However, this means that the greedy algorithm would have considered $y_z$ before $x_j$. Since $F_1 \union {y_z}$ is independent, 
+and the set of elements already added by the algorithm when it considers $y_z$ is a subset of $F_1$, the algorithm would have added $y_z$ to its solution. 
+
+This is a contradiction, since $y_z \notin F_1$, and $F_1$ contains all elements of $I$ and all elements added by the algorithm before $x_j$.
+
+Therefore, no such index $j$ exists, and $w(x_j) \geq w(y_j)$ for every $j$. It follows that $w(W') \geq w(W^*)$.
+Since $W^*$ was an arbitrary maximum-weight independent set containing $I$, 
+our modified greedy algorithm returns a maximum-weight independent set containing $I$, as desired.
 
 \end{enumerate}
 

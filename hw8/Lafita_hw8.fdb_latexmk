@@ -1,7 +1,7 @@
 # Fdb version 4
-["pdflatex"] 1794613594.05451 "/home/jason-lafita/intro_algorithms/hw8/Lafita_hw8.tex" "Lafita_hw8.pdf" "Lafita_hw8" 1794613594.46029 0
+["pdflatex"] 1794628870.29151 "/home/jason-lafita/intro_algorithms/hw8/Lafita_hw8.tex" "Lafita_hw8.pdf" "Lafita_hw8" 1794628871.40742 0
   "/etc/texmf/web2c/texmf.cnf" 1781025547.25108 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/jason-lafita/intro_algorithms/hw8/Lafita_hw8.tex" 1794613593.906 18065 bc2c1f422f5ae88466feccfbea7e8ace ""
+  "/home/jason-lafita/intro_algorithms/hw8/Lafita_hw8.tex" 1794628869.95629 21074 332d43755c41a25df9d475a505edfc59 ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1246382020 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
@@ -196,9 +196,9 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1707919699 40399 f2c302f7d2af602abb742093540a5834 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1789503060.89473 165012 f177baa1c39a3ebd62c3096a43521a0d ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1789503090 6831105 2a71ac4d6e9f71fa7d13dd0979fbab26 ""
-  "Lafita_hw8.aux" 1794613594.418 526 ff0b4c939e62ab28fd3de3b577970286 "pdflatex"
-  "Lafita_hw8.out" 1794613594.418 533 60939d982ca7c3db1e233e2687010274 "pdflatex"
-  "Lafita_hw8.tex" 1794613593.906 18065 bc2c1f422f5ae88466feccfbea7e8ace ""
+  "Lafita_hw8.aux" 1794628871.28465 526 6aa527a91481df8a230a5a66bf528fb3 "pdflatex"
+  "Lafita_hw8.out" 1794628871.28565 533 60939d982ca7c3db1e233e2687010274 "pdflatex"
+  "Lafita_hw8.tex" 1794628869.95629 21074 332d43755c41a25df9d475a505edfc59 ""
   (generated)
   "Lafita_hw8.aux"
   "Lafita_hw8.log"
