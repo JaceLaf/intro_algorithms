@@ -254,7 +254,7 @@ Let $w$ be the weight of the newest added edge $x$ to $F$. Since $w$ is the next
 $\ell(e) \geq w$. Therefore, the minimum possible distance between any of the remaining $i$ clusters is exactly $w$. 
 
 Now, we assume FTSOC that there exists another partition $F'$ of $i$ components with a minimum distance between clusters greater than $w$. 
-Since every edge with weight at most $w$ has length at most $w$, its endpoints must belong to the same cluster in this alternative partition. 
+For this to happen, every edge with weight at most $w$, must have endpoints in the same cluster in this alternative partition. 
 Otherwise, the minimum distance between two clusters would be at most $w$. Now, we consider the $i + 1$ components before adding $x$. 
 Because all edges of weight at most $w$ must have endpoints in the same alternative cluster, each of these $i + 1$ components must be 
 entirely contained within one alternative cluster. However, there are only $i$ alternate clusters.
@@ -284,7 +284,59 @@ Summing, we get a runtime of $O(m \log n) + O(m) + O(m\alpha(m, n))$. The $O(m \
 Let $r_1, r_2, \dots r_k$ be positive integers.  Let $\mathcal I = \{ S \subseteq U : |S \cap U_i| \leq r_i\}$ for all $i \in \{1,2,\dots k\}$. 
 Prove that $(U, \mathcal I)$ is a matroid.  
 
-TODO
+To prove that $(U, \mathcal I)$ is a matroid, we must prove the following proprties hold:
+
+\begin{enumerate}[label=\arabic*., noitemsep]
+    \item $\emptyset \in \mathcal I$
+    \item Let $A$, $B$ be sets. If $A \in \mathcal I$ and $B \subseteq A$, then $B \in \mathcal I$
+    \item Let $A$, $B$ be sets. If $A, B \in \mathcal I$ and $|A| < |B|$, then for some elements $x$ such that $x \in B \ A$, 
+    $A \union x \in \mathcal I$
+\end{enumerate}
+
+\medbreak
+
+\textbf{Property 1:}
+
+We consider the empty set $\emptyset$. $\emptyset$ contains no elements. Therefore it contains $0$ elements from each set in the partition of $U$. 
+Therefore, $\emptyset \in \mathcal I$ and this property holds.
+
+\medbreak
+
+\textbf{Property 2:}
+
+We consider sets $A$ and $B$, where $A \in \mathcal I$ and $B \subseteq A$. Thus, all elements of $B$ are in $A$. Since $A \in \mathcal I$, 
+for each $i$, $A$ contains at most $r_i$ elements from $U_i$. $B$ contain no elements that are not also in $A$. 
+Therefore, $B$ cannot contain more than $r_i$ elements in any $U_i$. Thus, $B \in \mathcal I$, so this property holds.
+
+\medbreak
+
+\textbf{Property 3:}
+
+We consider sets $A$ and $B$, where $A, B \in \mathcal I$ and $|A| < |B|$. We can write the size of sets $A$ and $B$ as:
+
+$|A| = \sum_{i=k}^{k} (|A \cap U_i|)$
+
+$|B| = \sum_{i=k}^{k} (|B \cap U_i|)$
+
+Since $|A| < |B|$:
+
+$\sum_{i=k}^{k} (|A \cap U_i|) < \sum_{i=k}^{k} (|B \cap U_i|)$
+
+For this inequality to hold true, there must be some $i$ for which: 
+
+$|A \cap U_i| < |B \cap U_i|$
+
+Since $B \in \mathcal I$, we know that for this specific value $i$, $B$ has no more than $r_i$ elements in it from $U_i$. 
+Therefore $A$ has strictly fewer than $r_i$ elements in it from $U_i$. We consider $x$ to be an arbitrary element in $U_i$ such that $x \in B \ A$. 
+Now, we consider set $A \union {x}$. Since $A$ has strictly fewer than $r_i$ elements in it from $U_i$, adding $1$ element from $U_i$ ($x$)
+means that the resulting set $A \union {x}$ has no more than $r_i$ elements in it from $U_i$. 
+Thus, $A \union {x} \in \mathcal I$, and this property holds.
+
+\medbreak
+
+In proving these $3$ properties, we have proven that $(U, \mathcal I)$ is a matroid.
+
+\bigbreak
 
 \item (17 points) Let $(U, \mathcal I)$ be a matroid, and let $w : U \rightarrow \mathbb{R}^+$ be an assignment of weights to elements. 
 We know that the greedy algorithm will return a maximum-weight independent set.  But suppose we are also given some $I \in \mathcal I$, 
