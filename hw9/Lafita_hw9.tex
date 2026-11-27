@@ -143,19 +143,106 @@ Prove correctness and polynomial running time. Hint: reduce to max-flow.
 
 \textbf{Algorithm Description:}
 
-TODO
+We will transform the given demands into an ordinary single-source, single-sink max-flow problem. 
+
+First, we run a preliminary check. We find $\sum_{v \in V} d_v$. We then compare this value against $0$. In any circulation, 
+every unit of flow that enters one vertex must come from another, so the total demand must balance.
+
+Now, we first define $D$ as $D = \sum_{v: d_v > 0} d_v$. Next, we add $2$ new vertices to $G$ -- a super souce $s$ and super sink $t$. 
+For each vertex $v$ where $d_v < 0$, we add edge $(s, v)$ with capacity $-d_v$. For each vertex $v$ where $d_v > 0$, we add edge $(v, t)$ 
+with capacity $d_v$. Now, we run Edmonds-Karp from source $s$ to sink $t$ and let $M$ be the maximum flow found. 
+If $M = D$, then we return \texttt{True}. If not, we return \texttt{False}.
 
 \bigbreak
 
 \textbf{Correctness Proof:}
 
-TODO
+To prove correctness for this algorithm, we must prove that: A valid circulation exists if and only if $M = D$. 
+We prove both directions.
+
+\medbreak
+
+First, we prove that: If a valid circulation exists, then $M = D$. Assume a valid circulation $f$ exists for $G$. 
+Our algorithm constructs a flow network where for every original edge $e$, we send $f(e)$ units along that edge. 
+For every vertex $v$ with negative demand $d$, we send $-d_v$ units along new edge $(s, v)$. 
+For every vertex $v$ with positive demand $d$, we send $d_v$ units along new edge $(v, t)$. 
+
+We show that this creates a valid $s-t$ flow. We know that the original capacities of each edge are respected, 
+since we do not augment any existing edges in the graph. Next, we know that for every vertex $v$ (except for $s$ and $t$), 
+the incoming flow is equal to the outgoing flow. We consider arbitrary vertex $v$. There are $3$ cases for added edges in $v$:
+
+\begin{enumerate}[label=(\arabic*), noitemsep]
+    \item $d_v < 0$ -- The new edge $(s, v)$ supplies $-d_v$ units of incoming flow. The original circulation satisfies 
+    $\sum_{u} f(u,v) - \sum_{u} f(v,u) = d_v$, so adding $-d_v$ units of incoming flow makes this equation balance to $0$. 
+    Thus, every edge from $s$ will be saturated.
+    \item $d_v > 0$ -- The new edge $(v, t)$ removes $d_t$ units of outgoing flow. This again balances the original circulation equation 
+    in making total incoming flow equal total outgoing flow. 
+    Thus, every edge to $t$ will be saturated.
+    \item $d_v = 0$ -- Flow conservation holds, since the original circulation already satisfies it and it is not modified.
+\end{enumerate}
+
+Therefore, we can see that we've constructed a valid $s-t$ flow. Now, we can determine the max value $M$ of this flow. 
+Since every edge from $s$ is saturated, we know that the sum of the capacity of edges from $s$ must be the maximum flow that can be sent. 
+Therefore, we know that:
+
+$$M = \sum_{v: d_v < 0} (-d_v)$$
+
+However, since we know total demand is $0$, this means that:
+
+$$M = \sum_{v: d_v < 0} (-d_v) = \sum_{v: d_v > 0} d_v = D$$
+
+Thus, $M = D$, and this direction holds.
+
+\medbreak
+
+Now, we prove that: If $M = D$, then a valid circulation exists. We assume that the max flow $M$ of the augmented $G$ is equal to $D$. 
+From the proof above, we know the total capacity leaving $s$ and the total capacity entering $t$ are both $D$. 
+Therefore, every edge leaving $s$ and every edge entering $t$ must be saturated. 
+
+We will construct a circulation in the original graph by simply restricting the maximum flow to the original edges. 
+We discard the newly added edges involving $s$ and $t$, and keep the flow on all original edges to prove that a valid circulation exists. 
+
+First, we show that capacities are respected. Every original edge retains its original capacity in the constructed network. 
+Since $M$ respects those capacities, the restricted flow also respects them. Next, we show that the demand condition holds at every vertex. 
+We consider an arbitrary vertex $v$. There are three cases for $v$'s demand:
+
+\begin{enumerate}[label=(\arabic*), noitemsep]
+    \item $d_v < 0$ -- The edge $(s, v)$ is saturated and therefore carries $-d_v$ flow. We know that the flow out on the original edges is equal to 
+    the sum of the flow in on the original edges and $-d_v$. Thus, we know that $\text{flow in} - \text{flow out} = d_v$. 
+    \item $d_v > 0$ -- The edge $(v, t)$ is saturated and therefore carries $d_v$ flow. We know the flow in on the original edge is equal to 
+    the sum of the flow out on the original edges and $d_v$. Thus, we can rearrange once again to get $\text{flow in} - \text{flow out} = d_v$. 
+    \item $d_v = 0$ -- No changes were made, so flow conservation still gives $\text{flow in} - \text{flow out} = d_v$.
+\end{enumerate}
+
+Thus, every vertex satisfies its required demand. The restricted flow is therefore a valid circulation in the original graph.
+
+\medbreak
+
+In proving both directions of the statement, we have proven that the algorithm correctly determines whether a valid circulation exists.
 
 \bigbreak
 
 \textbf{Runtime Proof:}
 
-TODO
+We will follow the steps of the algorithm to find the total running time of this algorithm. 
+
+First, we find the sum of demand $d_v$ for all vertices $v$. This involves iterating over every vertex $1$ time. 
+As we do this, we also sum the total demand of all vertices $v$ where $d_v > 0$ to find $D$ in the same step. 
+This step involves iterating over every vertex once, giving time $O(n)$. 
+
+Next, we add $s$ and $t$ to $G$ and link it to the existing nodes. We must iterate through each vertex $v$, check if $d_v$ is positive, negative, or $0$, 
+and add edges accordingly. This involves another pass of every vertex, giving $O(n)$ time. 
+
+Finally, we run Edmonds-Karp to find $M$. As per \textbf{Theorem 20.3.4}, the runtime is $O(m^{2}n)$. 
+The final check of $M$ against $D$ takes $O(1)$ time.
+
+Thus, the total runtime is:
+
+$$O(n) + O(n) + O(m^{2}n) + O(1)$$
+
+The term $O(m^{2}n)$ dominates, yielding a simplified total runtime of:
+
+$$O(m^{2}n)$$
 
 \bigbreak
 
