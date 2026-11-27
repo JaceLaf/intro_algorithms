@@ -214,7 +214,36 @@ Is there a directed graph, with no multi-edges or self-loops, that satisfies the
 
 \bigbreak
 
-TODO
+Yes, there is a graph that satisfied these constraints.
+
+\medbreak
+
+\textbf{Adjacency list:}
+
+$1 \rightarrow [2, 4]$
+
+$2 \rightarrow [3, 4]$
+
+$3 \rightarrow [4]$
+
+$4 \rightarrow []$
+
+\medbreak
+
+\textbf{Representation:}
+
+\begin{tikzpicture}[->, >=stealth, node distance=2cm, every node/.style={circle, draw, minimum size=8mm}]
+    \node (1) at (0, 0) {1};
+    \node (2) at (0, -2) {2};
+    \node (3) at (2, 0) {3};
+    \node (4) at (2, -2) {4};
+
+    \draw (1) -- (2);
+    \draw (1) -- (4);
+    \draw (2) -- (3);
+    \draw (2) -- (4);
+    \draw (3) -- (4);
+\end{tikzpicture}
 
 \bigbreak
 
@@ -232,19 +261,122 @@ Hint: think flow, and think about creating a useful auxiliary graph.
 
 \textbf{Algorithm Description:}
 
-TODO
+First, we perform a simple check where for the degrees given, we define:
+
+$$D = \sum_{j=1}^{n} d_j^{out}$$
+
+Then, we ensure that the following holds true:
+
+$$D = \sum_{j=1}^{n} d_j^{in}$$
+
+If there is a mismatch in the total out degree and total in degree, then sequence cannot work, so we return \texttt{False}.
+
+Now, we create an auxiliary structure in the form of a bipartite graph where each vertex is duplicated. Thus, for each vertex $j$ in the original graph, 
+our bipartite graph has left-side vertex $o_j$ and right-side vertex $i_j$, representing outgoing edges of $j$ and incoming edges of $j$, respectively. 
+Next, we connect all possible edges within the constraints, so for all $u, v$ such that $u \neq v$, we add $(o_u, i_v)$ to the graph with capacity $1$. 
+We perform an intermediary check here to allow for early termination, where we check if the number of edges in the bipartite graph is less than $D$. 
+In this case, there are not enough possible edges to saturate the needed out-degree requirement, so we can return \texttt{False}.
+
+This graph can then be turned into a flow network. We add source $s$, with an outgoing edge to all outgoing edges $o_j$, where the capacity of 
+each $(s, o_j)$ is equal to the out-degree of $j$, and destination $t$, where all incoming edges $I$ have an outgoing edge to $t$. 
+We use Edmonds-Karp to then find the maximum flow over the auxiliary structure from $s$ to $t$. Let $M$ be the maximum flow found by Edmonds-Karp.
+
+Now that we have this structure, we can determine whether the given degree sequence is realizable over these nodes. 
+Recall variable $D$, representing the total out-degree of the original graph. From here, we have 2 cases:
+
+\begin{enumerate}[label=(\arabic*), noitemsep]
+    \item $D < M$ -- There are not enough possible outgoing edges over those nodes to reach the needed overall out-degree. 
+    Thus, the sequence is not realizable. Algorithm returns \texttt{False}
+    \item $D = M$ -- There are enough outgoing edges to reach the overall out-degree. The sequence is realizable.
+    \item Note that $D > M$ is impossible by the max-flow/min-cut theorem, as the minimum cut across the graph is equal to $D$, 
+    so the max flow found by Edmonds Karp can be no greater.
+\end{enumerate}
+
+Now that we know the sequence is realizable, we turn to the creation of th\texttt{False}.e directed graph with the given degree sequence. 
+We initialize an empty graph $G$ where vertices $V$ are the $n$ original given vertices nd $E = \emptyset$.
+We then iterate over every edge between the left and right side of the auxiliary maximum flow network. 
+For any edge in the auxiliary network $(o_u, i_v)$, we add edge $(u, v)$ to $G$. 
+This produces a graph with the given degree sequence.
 
 \bigbreak
 
 \textbf{Correctness Proof:}
 
-TODO
+To prove correctness, we must prove that the algorithm returns a graph with the given degree sequence if and only if such a graph exists. 
+We will do so by proving both directions of this statement.
+
+\medbreak
+
+First, we prove the statement: if a graph with the given degree sequence exists, the algorithm returns it. 
+We assume such a graph $G$ exists. We will first show that the maximum flow $M$ found in the auxiliary graph has a value equal to $D$. 
+When adding each edge $(s, o_j)$ for each vertex $j$, we set the capacity of that edge to the out-degree of vertex $j$. 
+When adding each edge $(i_j, t)$ for each vertex $j$, we set the capacity of that edge to the in-degree of vertex $j$. 
+Since we know $D \leq \text{num. edges in the bipartite graph}$, the cut between left and right side has capacity at least $D$, 
+and the cuts between $s$ and the rest of the graph and $t$ and the rest of the graph have capacity exactly $D$. 
+Thus, the minimum cut of the auxiliary structure is $D$, so the maximum flow of the structure is $D$. 
+
+Now, we show that the maximum flow produced is equal to the given degree sequence when the graph is assembled to prove the correct graph is returned. 
+Since the maximum flow has a value of $D$, all edges leaving the source and entering the sink must be saturated. 
+This means that each vertex $o_j$ sends exactly $d_j^{out}$ units of flow, and each vertex $i_k$ receives exactly $d_k^{in}$ units of flow. 
+Furthermore, since all edges between the left and right sides of the bipartite graph have a capacity of $1$, and the maximum flow is integral, 
+each edge carries either $0$ or $1$ units of flow. To construct the original graph, we iterate through each edge $(o_i, i_j)$ in the bipartite graph. 
+If the edge carries 1 unit of flow, we add the corresponding directed edge $(i, j)$ to our original graph. Otherwise, we do nothing.
+
+Since each vertex $o_j$ sends exactly $d_j^{out}$ units of flow, the corresponding vertex $j$ in our original graph has exactly $d_j^{out}$ outgoing edges. 
+Similarly, since each vertex $i_k$ receives exactly $d_k^{in}$ units of flow, the corresponding vertex $k$ in our original graph has 
+exactly $d_k^{in}$ incoming edges. Additionally, since we do not create edges between $o_j$ and $i_j$, there are no self-loops, 
+and since each edge between the two sides has a capacity of $1$, there are no multi-edges.
+
+Therefore, the graph constructed by our algorithm has exactly the given degree sequence and satisfies the required restrictions.
+
+\medbreak
+
+Next, we prove the statement: if the algorithm returns a graph with the given degree sequence, then such a graph exists. 
+We prove this by contrapositive, so we will prove: if no graph with the given degree sequence exists, the algorithm does not return a graph. 
+We assume that no graph with the given degree sequence exists. We assume FTSOC that the algorithm returns a graph with the given degree sequence. 
+As per the argument above, we know that if the algorithm returns a graph, then $M = D$. Since the total capacity leaving $s$ and entering $t$ is both $D$, 
+every edge leaving the source and every edge entering the sink must be saturated. Because the capacities between the left and right sides 
+are $1$ and the flow is integral, every such edge carries either $0$ or $1$ unit of flow. In the graph constructed by the algorithm, 
+every edge $(o_u, i_v)$, we add $(u, v)$ to $G$. By the proof above, we know each vertex $u$ has $d_u^{out}$ outgoing edges. 
+Thus, exactly $d_u^{out}$ edges enter the incoming vertices. Since $(i_u, t)$ is saturated, we know $d_u^{in}$ edges enter $i_u$, 
+so $u$ has $d_u^{in}$ incoming edges. Because $(o_u, i_u)$ was not included for all $u$, there are no self-loops. 
+Because every edge between the sides has capacity $1$, there are no multi-edges. Therefore, $G$ has precisely the specified degree sequence. 
+This contradicts the assumption that no such graph exists. Thus, if no graph with the given degree sequence exists, the algorithm cannot return a graph.
+In proving the contrapositive, we prove the original statement.
+
+\medbreak
+
+Therefore, in proving the $2$ parts of the original statement, we prove that the algorithm is correct.
 
 \bigbreak
 
 \textbf{Runtime Proof:}
 
-TODO
+We will follow the steps of the algorithm to find the total running time of this algorithm. 
+
+First, the initial degree check iterates over every vertex, keeping track of out-degree and in-degree, giving a runtime of $O(n)$ for this step. 
+Next, we create the bipartite graph. We must initialize adjacency lists for each of the $2n$ vertices, taking $O(2n) = O(n)$ time.  
+We then add edges for each of the viable vertices, keeping track of how many edges we add. Thus, for each of the $n$ outgoing vertices, 
+we iterate over the $n$ incoming vertices to check if we can add an edge, giving runtime $n * O(n) = O(n^2)$. 
+From here, we add the source and sink, along with their respective edges to each of the outgoing and incoming vertices. 
+This is another iteration over each of the vertices twice, giving time $O(2n) = O(n)$. 
+
+Now, we run Edmonds-Karp. As per \textbf{Theorem 20.3.4}, the runtime is $O(m^{2}n)$. However, we can simplify this further. 
+We added any edge $(o_u, i_v)$ to the auxiliary graph provided $u \neq v$. Therefore, each of the $n$ outgoing vertices has $n-1$ edges. 
+Furthermore, there are $n$ edges $(s, o_j)$ and $n$ edges $(i_j, t)$. Summing this, we know the auxiliary graph has a total number of edges: 
+$m = n * (n-1) + n + n = n^2 - n + 2n = n^2 + n = O(n^2)$. Therefore, the runtime of Edmonds-Karp is $O(m^{2}n) = O(((n)^{2})^{2}n) = O(n^5)$ . 
+
+Finally, for the final step where create the directed graph, we must initialize $n$ adjacency lists first. 
+We then iterate through the max-flow graph, and add an edge $(u, v)$ for each $(o_u, i_v)$ in the flow graph. 
+As the maximum viable number of out-edges is $O(n * (n-1)) = O(n^2)$, this step takes at most $O(n^2)$ time. 
+
+Summing, we have a total runtime of:
+
+$$O(n) + O(n) + O(n^2) + O(n) + O(n^5) + O(n^2)$$
+
+Clearly, the $O(n^5)$ term dominates the others, giving a simplified runtime of:
+
+$$O(n^5)$$
 
 \end{enumerate}
 
