@@ -224,7 +224,7 @@ In proving both directions of the statement, we have proven that the algorithm c
 
 \textbf{Runtime Proof:}
 
-We will follow the steps of the algorithm to find the total running time of this algorithm. 
+We will follow the steps of the algorithm to find the total running time. 
 
 First, we find the sum of demand $d_v$ for all vertices $v$. This involves iterating over every vertex $1$ time. 
 As we do this, we also sum the total demand of all vertices $v$ where $d_v > 0$ to find $D$ in the same step. 
@@ -234,15 +234,17 @@ Next, we add $s$ and $t$ to $G$ and link it to the existing nodes. We must itera
 and add edges accordingly. This involves another pass of every vertex, giving $O(n)$ time. 
 
 Finally, we run Edmonds-Karp to find $M$. As per \textbf{Theorem 20.3.4}, the runtime is $O(m^{2}n)$. 
+However, the number of edges in the graph we run Edmonds-Karp on is not $m$, since for each vertex, we can add an edge from $s$ or to $t$. 
+This means the number of edges in the graph is at most $O(m + n)$. Thus, the runtime of this step is $O(n(m + n)^{2})$
 The final check of $M$ against $D$ takes $O(1)$ time.
 
 Thus, the total runtime is:
 
-$$O(n) + O(n) + O(m^{2}n) + O(1)$$
+$$O(n) + O(n) + O(n(m + n)^{2}) + O(1)$$
 
-The term $O(m^{2}n)$ dominates, yielding a simplified total runtime of:
+The term $O(n(m + n)^{2})$ dominates, yielding a simplified total runtime of:
 
-$$O(m^{2}n)$$
+$$O(n(m + n)^{2})$$
 
 \bigbreak
 
@@ -263,19 +265,130 @@ initially setting $f(e)= \ell(e)$ for all $e$. This will not be a valid circulat
 
 \textbf{Algorithm Description:}
 
-TODO
+We will initially create a flow network where for each edge $e$, we assign $f(e) = \ell(e)$. 
+This guarantees that every edge fulfills its lower bound. Since we've already sent $\ell(e)$ units of flow through each edge $e$, 
+we must recalculate the capacities of each edge as $c'(e) = c(e) - \ell(e)$ to represent the additional amount of flow we can send through $e$.
+
+We must also make the vertex adhere to the demand constraint. For each vertex $v$, we define:
+
+$$F_{in}(v) = \sum_{u: (u, v) \in E} \ell(u, v)$$
+
+$$F_{out}(v) = \sum_{u: (v, u) \in E} \ell(v, u)$$
+
+This will give us a net initial flow of $F_{in}(v) - F_{out}(v)$. Since $F(v)$ represents the minimum possible flow in and out of $v$, in any valid flow,
+there must exist some quantity such that: $F_{in}(v) - F_{out}(v) + \text{quantity} = d_v$. 
+We define that quantity as $d'_v$. For each vertex $v$ in $G$, we compute $d'_v$: 
+
+$$d'_v = d_v - F_{in}(v) + F_{out}(v)$$
+
+Now that we have updated $d'_v$ and $c'(e)$, we can run the algorithm from part (a) to see if the updated graph produces a valid circulation.
 
 \bigbreak
 
 \textbf{Correctness Proof:}
 
-TODO
+Since we already know that the algorithm in part (a) is correct, we must now prove that: 
+A valid circulation exists in the augmented graph if and only if a valid circulation exists in the original graph. 
+We will prove both directions of this statement.
+
+\medbreak
+
+We first prove: If a valid circulation exists in the original graph, one exists in the augmented graph. 
+We assume that a valid circulation $f$ exists in the original graph. We will show that we can construct a valid circulation $f'$ in the new graph. 
+Since $f$ is the total flow and we initially commit to sending $\ell$ flow, we dirst define $f'(e) = f(e) - \ell(e)$. 
+We must show that in the augmented graph, the modified capacity constraints and demand constraints are satisfied
+
+Starting with the capacity constriants, since we know $f$ is a valid circulation in the original graph, we can confirm that 
+$\ell(e) \leq f(e) \leq c(e)$. Subtracting $\ell(e)$ from all sides, we get $0 \leq f(e) - \ell(e) \leq c(e) - \ell(e)$. 
+Inputting modified flow $f'$ and modified capacity $c'$, we get $0 \leq f'(e) \leq c'(e)$. 
+Thus, the capacity constraint is satisifed.
+
+Now, we prove the demand constraint. The original circulation has the constraint:
+
+$$\sum_{u: (u, v) \in E} f(u, v) - \sum_{u: (v, u) \in E} f(v, u) = d_v$$
+
+We will show that $f'$ satisfies:
+
+$$\sum_{u: (u, v) \in E} f'(u, v) - \sum_{u: (v, u) \in E} f'(v, u) = d'_v$$
+
+Substituting $f'(e) = f(e) - \ell(e)$, we get:
+
+$\sum_{u: (u, v) \in E} (f(u, v) - \ell(u, v)) - \sum_{u: (v, u) \in E} (f(v, u) - \ell(v, u)) = d'_v$
+
+$\sum_{u: (u, v) \in E} f(u, v) - \sum_{u: (v, u) \in E} f(v, u) - \sum_{u: (u, v) \in E} \ell(u, v) + \sum_{u: (v, u) \in E} \ell(v, u) = d'_v$
+
+Substituting $\sum_{u: (u, v) \in E} f(u, v) - \sum_{u: (v, u) \in E} f(v, u) = d_v$
+
+$d_v - \sum_{u: (u, v) \in E} \ell(u, v) + \sum_{u: (v, u) \in E} \ell(v, u) = d'_v$
+
+Recalling the initial definitions of $F_{in}(v)$ and $F_{out}(v)$, we get:
+
+$d_v - F_{in}(v) + F_{out}(v) = d'_v$
+
+This holds true for how we define $d'_v$, meaning the demand constraint is satisfied.
+
+In proving that these constraints hold in the modified graph if they hold in the original, we have proven this direction.
+
+\medbreak
+
+Now, we will prove: If a valid circulation exists in the augmented graph, one exists in the original graph.
+We assume that a valid circulation $f'$ exists in the new graph. We will show that we can construct a valid circulation $f$ in the original graph. 
+We reverse the relationship between $f$ and $f'$ to calculate $f$ from $f'$: $f(e) = f'(e) + \ell(e)$. 
+We must show that in the original graph, the modified capacity constraints and demand constraints are satisfied.
+
+Starting with the capacity constraint, since we know $f'$ is a valid circulation, we know that $0 \leq f'(e) \leq c'(e)$. 
+Adding $\ell(e)$ to all sides, we get $\ell(e) \leq f'(e) + \ell(e) \leq c'(e) + \ell(e)$. Recalling the formulas for $f'$ and $c'$, this becomes: 
+$\ell(e) \leq f(e) \leq c(e)$. Thus, the bounds constraint is satisfied.
+
+Now, we move onto the demand constraint. We know that the augmented demand constraint holds, meaning:
+
+$$\sum_{u: (u, v) \in E} f'(u, v) - \sum_{u: (v, u) \in E} f'(v, u) = d'_v$$
+
+We will show that $f$ satisfies:
+
+$$\sum_{u: (u, v) \in E} f(u, v) - \sum_{u: (v, u) \in E} f(v, u) = d_v$$
+
+Substituting $f(e) = f'(e) + \ell(e)$:
+
+$\sum_{u: (u, v) \in E} (f'(u, v) + \ell(u, v)) - \sum_{u: (v, u) \in E} (f'(v, u) + \ell(v, u)) = d_v$
+
+$\sum_{u: (u, v) \in E} f'(u, v) - \sum_{u: (v, u) \in E} f'(v, u) + \sum_{u: (u, v) \in E} \ell(u, v) - \sum_{u: (v, u) \in E} \ell(v, u) = d_v$
+
+Substituting $\sum_{u: (u, v) \in E} f'(u, v) - \sum_{u: (v, u) \in E} f'(v, u) = d'_v$:
+
+$d'_v + \sum_{u: (u, v) \in E} \ell(u, v) - \sum_{u: (v, u) \in E} \ell(v, u) = d_v$
+
+Recalling the initial definitions of $F_{in}(v)$ and $F_{out}(v)$, we get:
+
+$d'_v + F_{in}(v) - F_{out}(v) = d'_v$
+
+Therefore, this holds and satisfies the demand constraint. 
+
+In proving that these constraints hold in the origina graph if they hold in the modified, we have proven this direction.
+
+\medbreak
+
+In proving both directions of the statement, we have proven that the modification to the graph preserves the existence of a valid circulation, 
+meaning the algorithm returns whether or not this graph has a valid circulation within the constraints. 
 
 \bigbreak
 
 \textbf{Runtime Proof:}
 
-TODO
+We will follow the steps of the algorithm to find the total running time. 
+
+First, we iterate through every edge and assign the initial flow $f(e) = \ell(e)$, updating the new capacity $c'(e)$ as we go. 
+This takes $O(m)$ time, as we go through each edge. 
+
+Next, we calculate the updated demand $d'_v$ for each vertex $v$. For each $v$, we iterate through each outgoing and each incoming edge once. 
+Since each edge is outgoing from one vertex and incoming to another, this means we look at each edge twice and each vertex once. 
+This gives a runtime $O(2m + n) = O(m + n)$.
+
+From here, we run the original algorithm. We proved this has a time complexity of $O(n(m + n)^{2})$. 
+
+Summing, we get a time complexity of $O(m) + O(m + n) + O(n(m + n)^{2})$. The latter term dominates, giving a simplified runtime of:
+
+$$O(n(m + n)^{2})$$
 
 \end{enumerate}
 
